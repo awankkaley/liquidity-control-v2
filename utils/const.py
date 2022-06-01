@@ -1,4 +1,4 @@
-price_decimals = 4
+price_decimals = 6
 quantity_decimals = 2
-pairing = 'BSI/USDT' 
-market = 'BSI/USDT'
+pairing = 'doge_usdt' 
+market = 'doge_usdt'

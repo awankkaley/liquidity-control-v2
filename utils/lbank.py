@@ -2,7 +2,6 @@ import random
 import string
 import requests as req
 import hashlib
-import utils.const as const
 
 from base64 import b64encode
 
@@ -33,7 +32,7 @@ def buildRSASignV2(params, t):
 
 def get_trading_depth():
     response = req.get(
-        'https://api.lbkex.com/v2/depth.do?symbol='+const.pairing+'&size=3')
+        'https://api.lbkex.com/v2/depth.do?symbol=doge_usdt&size=3')
     lowest_sell = float(response.json()['data']['asks'][0][0])
     print('lowest_sell: ' + str(lowest_sell))
     highest_buy = float(response.json()['data']['bids'][0][0])
@@ -110,3 +109,5 @@ def asset_information():
         return resp
     else:
         print(res.status_code)
+        
+    
