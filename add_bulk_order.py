@@ -60,4 +60,4 @@ for index in range(int(order_quantity)):
 
 data = json.dumps(list)
 orderBatch(data=data,api_key=api_key,private_key=private_key)
-
+input("Done")
