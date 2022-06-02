@@ -1,13 +1,23 @@
 import json
 import sys
 from utils.lbank import orderBatch
-import utils.const as const
 
 
 
-print('STARTING ADD BULK ORDER ON ' + const.pairing)
+print('STARTING ADD BULK ORDER')
 
 # input
+print('START CREATE VOLUME BOT')
+api_key = input("Please input API Key : ")
+print('api key inserted')
+private_key = input("Please input Private Key : ")
+print('Private Key inserted')
+market = input("Please input Market Pair : ")
+print('Market Pair : ' + market)
+price_decimals = input("Please input Price Decimal: ")
+print('Price Decimal : ' + price_decimals)
+quantity_decimals = input("Please input Qty Decimal: ")
+print('Qty Decimal : ' + quantity_decimals)
 amount = input("Please input budget (USDT) amount : ")
 print('Budget : ' + amount + ' USDT')
 order_type = input("Please enter order type (buy/sell) : ")
@@ -38,14 +48,14 @@ for index in range(int(order_quantity)):
         index * distance_percentage_per_order * direction_amplifier)
     price = float(order_start_price) + \
         float(order_start_price) * current_percentage / 100
-    price = round(price, int(const.price_decimals))
+    price = round(price, int(price_decimals))
     print('Price : ' + str(price))
     token_per_order = round(
-        float(usdt_per_order / price), int(const.quantity_decimals))
+        float(usdt_per_order / price), int(quantity_decimals))
     print('token_per_order: ' + str(token_per_order))
-    list.append({"symbol": const.pairing, "type": order_type,
+    list.append({"symbol": market, "type": order_type,
                 "price": price, "amount": token_per_order, "custom_id": ''})
 
 data = json.dumps(list)
-orderBatch(data=data)
+orderBatch(data=data,api_key=api_key,private_key=private_key)
 

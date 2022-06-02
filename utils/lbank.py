@@ -9,11 +9,8 @@ from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
-api_key = "da2c345e-d354-415c-beae-9e55d9e1d415"
-secret_key = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKS49YniYbvKc04Z+9TnT/aFzJl19moJ5ubsMxPodEPN2z696jOzry6ovzPUnPN2Q08iJHwLLyttCw5HuJAahPvoucD3rutK8XlwQVKB1YrGKczzGauY/n5VC8W96nJq/ENFhXKpM8et0hJLJiqKf+Zm6KdjA2hloxGAN7QQO8ENAgMBAAECgYAbxVcYJQOHLo2cCENt1IWlsU8aPEoL/JliK0Y9P/6CA+3HuSsIBm4tdqOtsFW5siGM8Nun0hbkwmCPysWx/daXgItjcLaTIMjZTVsRv6EW06X1jJOfPSp/8WvB48sG45TfvsLTUSfRJ3LmVkQNKGkNaLzir7C22cl2r2gSUGtaYQJBANXd64TaCmyO82m+OUV00U8zZZWS8++IBfTO/JebfijeRz/DmWrvEI5/sCELQwbkFIcwWcpNaB/xyl/Q9P5at7kCQQDFLIKpWV2JGTCkGkEMTgoN6rjFRn7sut02JTcThRXi5VnAa7nHi3HW3pZQsk6tYOF4y0rTdaWTO8wlUaU5ddX1AkB26VAlavJ2z7jJp6nCU6R5a/NkifO10CS3rErHpP4tjQGCk6f+y/Oht59fkBpxf2lmjVyvXgCyGkdSpSVDM3+JAkEAltUj5xS73uLsOLz0wcr5GghS7GavNb0E+CSj60TFp1q3u+Esrx9XKH4CEx0z3qHcGaG6TeUTknwOAQZiFIC1+QJAM2vSjYQ7BtL2itb94s+nkhG3C+e8rnJdn51k8KsdVpMwcdpVFrfGvr1kphqA6u4GF4CGw66GEHXuwcYahC7HMg=="
-rsa_private_key = "-----BEGIN RSA PRIVATE KEY-----\n"+secret_key+"\n-----END RSA PRIVATE KEY-----"
-
-def buildRSASignV2(params, t):
+def buildRSASignV2(params, t, private_key):
+    rsa_private_key = "-----BEGIN RSA PRIVATE KEY-----\n"+private_key+"\n-----END RSA PRIVATE KEY-----"
     p = params
     p["timestamp"] = t
     p["signature_method"] = 'RSA'
@@ -30,9 +27,9 @@ def buildRSASignV2(params, t):
     sig = b64encode(sig1)
     return sig
 
-def get_trading_depth():
+def get_trading_depth(pair):
     response = req.get(
-        'https://api.lbkex.com/v2/depth.do?symbol=doge_usdt&size=3')
+        'https://api.lbkex.com/v2/depth.do?symbol='+pair+'&size=3')
     lowest_sell = float(response.json()['data']['asks'][0][0])
     print('lowest_sell: ' + str(lowest_sell))
     highest_buy = float(response.json()['data']['bids'][0][0])
@@ -46,7 +43,7 @@ def get_time_stamp():
     return result["data"]
 
 
-def orderBatch(data):
+def orderBatch(data,api_key,private_key):
     urlstr = "https://api.lbkex.com/v2/batch_create_order.do"
 
     num = string.ascii_letters + string.digits
@@ -60,7 +57,7 @@ def orderBatch(data):
     par["echostr"] = randomstr
     par['orders'] = data
 
-    sign = buildRSASignV2(params=par, t=timestamp)
+    sign = buildRSASignV2(params=par, t=timestamp, private_key=private_key)
 
     del par["echostr"]
     del par["signature_method"]
@@ -79,7 +76,7 @@ def orderBatch(data):
         print(res.status_code)
 
 
-def asset_information():
+def asset_information(api_key,private_key):
     urlstr = "https://api.lbkex.com/v2/user_info.do"
 
     num = string.ascii_letters + string.digits
@@ -92,7 +89,7 @@ def asset_information():
     par["signature_method"] = "RSA"
     par["echostr"] = randomstr
 
-    sign = buildRSASignV2(params=par, t=timestamp)
+    sign = buildRSASignV2(params=par, t=timestamp,private_key=private_key)
 
     del par["echostr"]
     del par["signature_method"]
