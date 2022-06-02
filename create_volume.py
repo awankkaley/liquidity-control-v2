@@ -1,4 +1,5 @@
 import json
+import sys
 import threading
 from utils.lbank import get_trading_depth, orderBatch
 from utils.math_utils import random_float
@@ -26,17 +27,19 @@ def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_
 
 
 
-print('START CREATE VOLUME BOT')
-api_key = input("Please input API Key : ")
-print('api key inserted')
-private_key = input("Please input Private Key : ")
-print('Private Key inserted')
-market = input("Please input Market Pair : ")
-print('Market Pair : ' + market)
-price_decimals = input("Please input Price Decimal: ")
-print('Price Decimal : ' + price_decimals)
-quantity_decimals = input("Please input Qty Decimal: ")
-print('Qty Decimal : ' + quantity_decimals)
+print('----START CREATE VOLUME BOT----')
+# input
+try:
+    with open('credential.txt') as f:
+        lines = f.readlines()
+        api_key = lines[0]
+        private_key = lines[1]
+        market = lines[2]
+        price_decimals = lines[3]
+        quantity_decimals = lines[4]
+except:
+    print('Credential Not Found, Please set your credential first')
+    sys.exit()
 min_usdt = input("Please enter random min quantity (USDT) : ")
 print('Order Min Quantity : ' + min_usdt + ' USDT / order')
 max_usdt = input("Please enter random max quantity (USDT) : ")
@@ -52,5 +55,3 @@ print('Order Min Price : ' + min_limit_price + ' USDT')
 
 
 start(float(delay), float(min_price_difference), float(min_usdt), float(max_usdt), float(max_limit_price), float(min_limit_price), market, int(quantity_decimals), int(price_decimals), str(api_key), str(private_key))
-
-# TIDAK ADA INTERVAL DI LBANK

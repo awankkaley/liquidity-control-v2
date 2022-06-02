@@ -4,20 +4,21 @@ from utils.lbank import orderBatch
 
 
 
-print('STARTING ADD BULK ORDER')
+print('----STARTING ADD BULK ORDER----')
 
 # input
-print('START CREATE VOLUME BOT')
-api_key = input("Please input API Key : ")
-print('api key inserted')
-private_key = input("Please input Private Key : ")
-print('Private Key inserted')
-market = input("Please input Market Pair : ")
-print('Market Pair : ' + market)
-price_decimals = input("Please input Price Decimal: ")
-print('Price Decimal : ' + price_decimals)
-quantity_decimals = input("Please input Qty Decimal: ")
-print('Qty Decimal : ' + quantity_decimals)
+try:
+    with open('credential.txt') as f:
+        lines = f.readlines()
+        api_key = lines[0]
+        private_key = lines[1]
+        market = lines[2]
+        price_decimals = lines[3]
+        quantity_decimals = lines[4]
+except:
+    print('Credential Not Found, Please set your credential first')
+    sys.exit()
+
 amount = input("Please input budget (USDT) amount : ")
 print('Budget : ' + amount + ' USDT')
 order_type = input("Please enter order type (buy/sell) : ")
@@ -31,6 +32,7 @@ trailing_percentage = input("Please enter trailing percentage : ")
 print('Trailing Percentage : ' + trailing_percentage + '%')
 order_quantity = input("Please enter order quantity : ")
 print('Order Quantity : ' + order_quantity)
+
 
 # output
 usdt_per_order = float(amount) / int(order_quantity)
