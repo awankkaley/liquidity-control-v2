@@ -40,7 +40,7 @@ try:
 except:
     print('Credential Not Found, Please set your credential first')
     sys.exit()
-    
+
 min_usdt = input("Please enter random min quantity (USDT) : ")
 print('Order Min Quantity : ' + min_usdt + ' USDT / order')
 max_usdt = input("Please enter random max quantity (USDT) : ")
@@ -56,3 +56,4 @@ print('Order Min Price : ' + min_limit_price + ' USDT')
 
 
 start(float(delay), float(min_price_difference), float(min_usdt), float(max_usdt), float(max_limit_price), float(min_limit_price), market, int(quantity_decimals), int(price_decimals), str(api_key), str(private_key))
+input("--------END-----------")

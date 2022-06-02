@@ -37,3 +37,5 @@ with open('credential.txt', 'w') as f:
         f.write(str(price_decimals))
         f.write("\n")
         f.write(str(quantity_decimals))        
+
+input("--------END-----------")
