@@ -40,6 +40,7 @@ try:
 except:
     print('Credential Not Found, Please set your credential first')
     sys.exit()
+    
 min_usdt = input("Please enter random min quantity (USDT) : ")
 print('Order Min Quantity : ' + min_usdt + ' USDT / order')
 max_usdt = input("Please enter random max quantity (USDT) : ")
