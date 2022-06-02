@@ -10,11 +10,11 @@ print('----STARTING ADD BULK ORDER----')
 try:
     with open('credential.txt') as f:
         lines = f.readlines()
-        api_key = lines[0]
-        private_key = lines[1]
-        market = lines[2]
-        price_decimals = lines[3]
-        quantity_decimals = lines[4]
+        api_key = lines[0].replace("\n", "")
+        private_key = lines[1].replace("\n", "")
+        market = lines[2].replace("\n", "")
+        price_decimals = lines[3].replace("\n", "")
+        quantity_decimals = lines[4].replace("\n", "")
 except:
     print('Credential Not Found, Please set your credential first')
     sys.exit()
