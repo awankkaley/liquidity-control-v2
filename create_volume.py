@@ -5,7 +5,7 @@ from utils.math_utils import random_float
 
 
 def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key ):
-    threading.Timer(delay, start, (delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price)).start()
+    threading.Timer(delay, start, (delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key)).start()
     trading_depth = get_trading_depth(market)
     lowest_sell = trading_depth[0]
     highest_buy = trading_depth[1]
