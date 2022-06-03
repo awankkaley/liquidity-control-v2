@@ -1,5 +1,6 @@
 import random
 import string
+import sys
 import requests as req
 import hashlib
 
@@ -64,16 +65,15 @@ def orderBatch(data,api_key,private_key):
     del par["timestamp"]
 
     par['sign'] = sign
-    print('get response with header {h} and param {p} by {url}'.format(
-        h=header, p=par, url=urlstr))
     res = req.post(url=urlstr, data=par, headers=header)
 
     if res.status_code == 200:
         resp = res.json()
-        print(resp)
         return resp
     else:
-        print(res.status_code)
+        print("--------TRANSACTION FAILED-----------")
+        
+
 
 
 def asset_information(api_key,private_key):
@@ -96,8 +96,6 @@ def asset_information(api_key,private_key):
     del par["timestamp"]
 
     par['sign'] = sign
-    print('get response with header {h} and param {p} by {url}'.format(
-        h=header, p=par, url=urlstr))
     res = req.post(url=urlstr, data=par, headers=header)
 
     if res.status_code == 200:

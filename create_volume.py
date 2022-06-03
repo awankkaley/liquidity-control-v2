@@ -7,6 +7,7 @@ from utils.math_utils import random_float
 
 def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key ):
     threading.Timer(delay, start, (delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key)).start()
+    print("\n---DATA----")
     trading_depth = get_trading_depth(market)
     lowest_sell = trading_depth[0]
     highest_buy = trading_depth[1]
@@ -18,13 +19,31 @@ def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_
         random_quantity = random_float(min_usdt, max_usdt, quantity_decimals)
         print('BuySell Quantity: ' + str(random_quantity) + ' USDT')
         random_price = random_float(highest_buy, lowest_sell, price_decimals)
+        token_per_order = round(float(random_quantity / random_price), int(quantity_decimals))
+        print('BuySell Quantity Token: ' + str(token_per_order))
         print('BuySell Price: ' + str(random_price) + ' USDT')
         list = []
         list.append({"symbol":market, "type":'sell', "price":random_price, "amount":random_quantity, "custom_id":''})
         list.append({"symbol":market, "type":'buy', "price":random_price, "amount":random_quantity, "custom_id":''})
         data = json.dumps(list)
-        orderBatch(data=data,api_key=api_key,private_key=private_key)
-
+        resData = orderBatch(data=data,api_key=api_key,private_key=private_key)
+        try:
+            if(resData['result']):
+                print("---RESULT----")
+                no = 0
+                for res in resData['data']:
+                    no+=1
+                    status = "Failed"
+                    if res['result']:
+                        status = "Success"
+                    if(no==1):
+                        print("Order Sell: "+status)
+                    else:
+                        print("Order Buy: "+status)
+            else :
+                print("--------TRANSACTION FAILED-----------")
+        except:
+             print("--------TRANSACTION FAILED-----------")
 
 
 print('----START CREATE VOLUME BOT----')
@@ -45,7 +64,7 @@ min_usdt = input("Please enter random min quantity (USDT) : ")
 print('Order Min Quantity : ' + min_usdt + ' USDT / order')
 max_usdt = input("Please enter random max quantity (USDT) : ")
 print('Order Max Quantity : ' + max_usdt + ' USDT / order')
-min_price_difference = input("Please enter min difference to run volume bots (USDT) maximum 4 decimals (Ex. 0.0001) : ")
+min_price_difference = input("Please enter min difference to run volume bots (USDT) maximum "+price_decimals+" decimals: ")
 print('Min Price Difference : ' + min_price_difference + ' USDT')
 delay = input("Please enter delay in seconds (Ex: 5.5) : ")
 print('Delay : ' + delay + ' seconds')
@@ -56,4 +75,4 @@ print('Order Min Price : ' + min_limit_price + ' USDT')
 
 
 start(float(delay), float(min_price_difference), float(min_usdt), float(max_usdt), float(max_limit_price), float(min_limit_price), market, int(quantity_decimals), int(price_decimals), str(api_key), str(private_key))
-input("--------END-----------")
+input("--------END-----------\n")

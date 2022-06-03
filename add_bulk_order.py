@@ -1,3 +1,4 @@
+from ast import If
 import json
 import sys
 from utils.lbank import orderBatch
@@ -17,11 +18,12 @@ try:
         quantity_decimals = lines[4].replace("\n", "")
 except:
     print('Credential Not Found, Please set your credential first')
-    sys.exit()
+    input("--------END-----------")
 
 amount = input("Please input budget (USDT) amount : ")
 print('Budget : ' + amount + ' USDT')
 order_type = input("Please enter order type (buy/sell) : ")
+
 if order_type != 'buy' and order_type != 'sell':
     print('Wrong value')
     sys.exit()
@@ -45,6 +47,7 @@ direction_amplifier = -1 if (order_type == 'buy') else 1
 
 list = []
 
+print('----DATA TO PROCESS----')
 for index in range(int(order_quantity)):
     current_percentage = float(
         index * distance_percentage_per_order * direction_amplifier)
@@ -59,5 +62,18 @@ for index in range(int(order_quantity)):
                 "price": price, "amount": token_per_order, "custom_id": ''})
 
 data = json.dumps(list)
-orderBatch(data=data,api_key=api_key,private_key=private_key)
+resData = orderBatch(data=data,api_key=api_key,private_key=private_key)
+
+if(resData['result']):
+    no = 0
+    print("---RESULT----")
+    for res in resData['data']:
+        no+=1
+        status = "Failed"
+        if res['result']:
+            status = "Success"
+        print("Order "+str(no)+": "+status)
+else :
+    input("--------TRANSACTION FAILED-----------")
+
 input("--------END-----------")
