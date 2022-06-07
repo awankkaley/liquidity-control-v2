@@ -1,4 +1,3 @@
-from ast import If
 import json
 import sys
 from utils.lbank import orderBatch

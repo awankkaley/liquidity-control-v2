@@ -1,6 +1,5 @@
 import random
 import string
-import sys
 import requests as req
 import hashlib
 
