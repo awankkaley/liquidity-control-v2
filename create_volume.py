@@ -1,14 +1,14 @@
 import json
 import sys
 import threading
-from utils.lbank import get_trading_depth, orderBatch
+from utils.exchange import get_trading_depth, orderBatch
 from utils.math_utils import random_float
 
 
-def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key ):
-    threading.Timer(delay, start, (delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key)).start()
+def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key,exchange ):
+    threading.Timer(delay, start, (delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key,exchange)).start()
     print("\n---DATA----")
-    trading_depth = get_trading_depth(market)
+    trading_depth = get_trading_depth(market,exchange)
     lowest_sell = trading_depth[0]
     highest_buy = trading_depth[1]
     print("Lowest : "+str(lowest_sell))
@@ -26,7 +26,7 @@ def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_
         list.append({"symbol":market, "type":'sell', "price":random_price, "amount":random_quantity, "custom_id":''})
         list.append({"symbol":market, "type":'buy', "price":random_price, "amount":random_quantity, "custom_id":''})
         data = json.dumps(list)
-        orderBatch(data=data,api_key=api_key,private_key=private_key,acton="create_volume")
+        orderBatch(data=data,api_key=api_key,private_key=private_key,acton="create_volume",exchange=exchange)
 
 
 
@@ -35,11 +35,12 @@ print('----START CREATE VOLUME BOT----')
 try:
     with open('credential.txt') as f:
         lines = f.readlines()
-        api_key = lines[0].replace("\n", "")
-        private_key = lines[1].replace("\n", "")
-        market = lines[2].replace("\n", "")
-        price_decimals = lines[3].replace("\n", "")
-        quantity_decimals = lines[4].replace("\n", "")
+        exchange = lines[0].replace("\n", "")
+        api_key = lines[1].replace("\n", "")
+        private_key = lines[2].replace("\n", "")
+        market = lines[3].replace("\n", "")
+        price_decimals = lines[4].replace("\n", "")
+        quantity_decimals = lines[5].replace("\n", "")
 except:
     print('Credential Not Found, Please set your credential first')
     sys.exit()
@@ -58,5 +59,5 @@ min_limit_price = input("Please enter minimum price to run volume bots (USDT): "
 print('Order Min Price : ' + min_limit_price + ' USDT')
 
 
-start(float(delay), float(min_price_difference), float(min_usdt), float(max_usdt), float(max_limit_price), float(min_limit_price), market, int(quantity_decimals), int(price_decimals), str(api_key), str(private_key))
+start(float(delay), float(min_price_difference), float(min_usdt), float(max_usdt), float(max_limit_price), float(min_limit_price), market, int(quantity_decimals), int(price_decimals), str(api_key), str(private_key), str(exchange))
 input("--------END-----------\n")

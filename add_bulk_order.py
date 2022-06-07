@@ -1,6 +1,6 @@
 import json
 import sys
-from utils.lbank import orderBatch
+from utils.exchange import orderBatch
 
 
 
@@ -10,11 +10,13 @@ print('----STARTING ADD BULK ORDER----')
 try:
     with open('credential.txt') as f:
         lines = f.readlines()
-        api_key = lines[0].replace("\n", "")
-        private_key = lines[1].replace("\n", "")
-        market = lines[2].replace("\n", "")
-        price_decimals = lines[3].replace("\n", "")
-        quantity_decimals = lines[4].replace("\n", "")
+        exchange = lines[0].replace("\n", "")
+        api_key = lines[1].replace("\n", "")
+        private_key = lines[2].replace("\n", "")
+        market = lines[3].replace("\n", "")
+        price_decimals = lines[4].replace("\n", "")
+        quantity_decimals = lines[5].replace("\n", "")
+        
 except:
     print('Credential Not Found, Please set your credential first')
     input("--------END-----------")
@@ -61,6 +63,6 @@ for index in range(int(order_quantity)):
                 "price": price, "amount": token_per_order, "custom_id": ''})
 
 data = json.dumps(list)
-orderBatch(data=data,api_key=api_key,private_key=private_key, acton="add_bulk_order")
+orderBatch(data=data,api_key=api_key,private_key=private_key, acton="add_bulk_order",exchange=exchange)
 
 input("--------END-----------")

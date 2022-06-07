@@ -1,5 +1,3 @@
-from ast import If
-from cgitb import reset
 import random
 import string
 import requests as req
