@@ -61,18 +61,6 @@ for index in range(int(order_quantity)):
                 "price": price, "amount": token_per_order, "custom_id": ''})
 
 data = json.dumps(list)
-resData = orderBatch(data=data,api_key=api_key,private_key=private_key)
-
-if(resData['result']):
-    no = 0
-    print("---RESULT----")
-    for res in resData['data']:
-        no+=1
-        status = "Failed"
-        if res['result']:
-            status = "Success"
-        print("Order "+str(no)+": "+status)
-else :
-    input("--------TRANSACTION FAILED-----------")
+orderBatch(data=data,api_key=api_key,private_key=private_key, acton="add_bulk_order")
 
 input("--------END-----------")

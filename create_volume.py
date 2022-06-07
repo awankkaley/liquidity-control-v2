@@ -26,24 +26,8 @@ def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_
         list.append({"symbol":market, "type":'sell', "price":random_price, "amount":random_quantity, "custom_id":''})
         list.append({"symbol":market, "type":'buy', "price":random_price, "amount":random_quantity, "custom_id":''})
         data = json.dumps(list)
-        resData = orderBatch(data=data,api_key=api_key,private_key=private_key)
-        try:
-            if(resData['result']):
-                print("---RESULT----")
-                no = 0
-                for res in resData['data']:
-                    no+=1
-                    status = "Failed"
-                    if res['result']:
-                        status = "Success"
-                    if(no==1):
-                        print("Order Sell: "+status)
-                    else:
-                        print("Order Buy: "+status)
-            else :
-                print("--------TRANSACTION FAILED-----------")
-        except:
-             print("--------TRANSACTION FAILED-----------")
+        orderBatch(data=data,api_key=api_key,private_key=private_key,acton="create_volume")
+
 
 
 print('----START CREATE VOLUME BOT----')
