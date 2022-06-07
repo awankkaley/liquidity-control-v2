@@ -5,7 +5,7 @@ print('api key inserted')
 private_key = input("Please input Private Key : ")
 print('Private Key inserted')
 
-market = input("Please input Market Pair (ex lbank : doge_usdt) : ")
+market = input("Please input Market Pair (ex lbank : doge_usdt ) : ")
 print('Market Pair : ' + market)
 while True:
         try:
