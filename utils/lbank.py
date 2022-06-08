@@ -34,9 +34,7 @@ def get_trading_depth(pair):
     response = req.get(
         'https://api.lbkex.com/v2/depth.do?symbol='+pair+'&size=3')
     lowest_sell = float(response.json()['data']['asks'][0][0])
-    print('lowest_sell: ' + str(lowest_sell))
     highest_buy = float(response.json()['data']['bids'][0][0])
-    print('highest_buy: ' + str(highest_buy))
     return [lowest_sell, highest_buy]
 
 
