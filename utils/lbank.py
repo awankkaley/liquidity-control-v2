@@ -44,7 +44,7 @@ def get_time_stamp():
     return result["data"]
 
 
-def orderBatch(data, api_key, private_key, acton):
+def orderBatch(data, api_key, private_key, acton,priority):
     urlstr = "https://api.lbkex.com/v2/batch_create_order.do"
 
     num = string.ascii_letters + string.digits
@@ -72,7 +72,7 @@ def orderBatch(data, api_key, private_key, acton):
         if acton == "add_bulk_order":
             responseForBulk(resp=resp)
         if acton == "create_volume":
-            responseForVolume(resp=resp)
+            responseForVolume(resp=resp,priority=priority)
     else:
         input("--------TRANSACTION FAILED-----------")
 
@@ -94,7 +94,7 @@ def responseForBulk(resp):
         input("--------TRANSACTION FAILED-----------")
 
 
-def responseForVolume(resp):
+def responseForVolume(resp,priority):
     if(resp['result']):
         print("---RESULT----")
         no = 0
@@ -103,15 +103,28 @@ def responseForVolume(resp):
             status = "Failed"
             if res['result']:
                 status = "Success"
-                if(no == 1):
-                    print("Order Sell: "+status)
+                if priority == 2:
+                    if(no == 1):
+                        print("Order Buy: "+status)
+                    else:
+                        print("Order Sell: "+status)
                 else:
-                    print("Order Buy: "+status)
+                    if(no == 1):
+                        print("Order Sell: "+status)
+                    else:
+                        print("Order Buy: "+status)
             else:
-                if(no == 1):
-                    print("Order Sell: "+status+"-"+str(res['error_code']))
+                if priority == 2:                
+                    if(no == 1):
+                        print("Order Buy: "+status+"-"+str(res['error_code']))
+                    else:
+                        print("Order Sell: "+status+"-"+str(res['error_code']))
                 else:
-                    print("Order Buy: "+status+"-"+str(res['error_code']))
+                    if(no == 1):
+                        print("Order Sell: "+status+"-"+str(res['error_code']))
+                    else:
+                        print("Order Buy: "+status+"-"+str(res['error_code']))
+
     else:
         print("--------TRANSACTION FAILED-----------")
 

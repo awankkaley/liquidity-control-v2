@@ -30,7 +30,7 @@ def start(delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_
             list.append({"symbol":market, "type":'buy', "price":random_price, "amount":random_quantity, "custom_id":''})
             list.append({"symbol":market, "type":'sell', "price":random_price, "amount":random_quantity, "custom_id":''})
         data = json.dumps(list)
-        orderBatch(data=data,api_key=api_key,private_key=private_key,acton="create_volume",exchange=exchange)
+        orderBatch(data=data,api_key=api_key,private_key=private_key,acton="create_volume",exchange=exchange,priority=priority)
 
 
 
