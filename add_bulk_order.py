@@ -63,6 +63,6 @@ for index in range(int(order_quantity)):
                 "price": price, "amount": token_per_order, "custom_id": ''})
 
 data = json.dumps(list)
-orderBatch(data=data,api_key=api_key,private_key=private_key, acton="add_bulk_order",exchange=exchange)
+orderBatch(data=data,api_key=api_key,private_key=private_key, acton="add_bulk_order",exchange=exchange,priority=2)
 
 input("--------END-----------")
