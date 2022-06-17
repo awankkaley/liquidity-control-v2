@@ -44,7 +44,7 @@ def get_time_stamp():
     return result["data"]
 
 
-def orderBatch(data, api_key, private_key, acton,priority):
+def orderBatch(data, api_key, private_key, acton,priority, self):
     urlstr = "https://api.lbkex.com/v2/batch_create_order.do"
 
     num = string.ascii_letters + string.digits
@@ -65,37 +65,47 @@ def orderBatch(data, api_key, private_key, acton,priority):
     del par["timestamp"]
 
     par['sign'] = sign
-    res = req.post(url=urlstr, data=par, headers=header)
+    res =  req.post(url=urlstr, data=par, headers=header)
 
     if res.status_code == 200:
         resp = res.json()
         if acton == "add_bulk_order":
-            responseForBulk(resp=resp)
+            responseForBulk(resp=resp, self=self)
         if acton == "create_volume":
-            responseForVolume(resp=resp,priority=priority)
+            responseForVolume(resp=resp,priority=priority,self=self)
     else:
-        input("--------TRANSACTION FAILED-----------")
+        self.result['text'] = "Process Failed"
 
 
-def responseForBulk(resp):
-    if(resp['result']):
+def responseForBulk(resp, self):
+    if(resp['result'] == True):
+        count = 0
         no = 0
-        print("---RESULT----")
+        self.f.write("\n")
+        self.f.write("------RESULT------")
         for res in resp['data']:
             no += 1
             status = "Failed"
             if res['result']:
+                count += 1
                 status = "Success"
+                self.f.write("\n")
+                self.f.write("Order "+str(no)+": "+status)
                 print("Order "+str(no)+": "+status)
             else:
+                self.f.write("\n")
+                self.f.write("Order "+str(no)+": "+status+"-"+str(res['error_code']))
                 print("Order "+str(no)+": "+status+"-"+str(res['error_code']))
-
+        self.success['text'] = str(count)
+        self.result['text'] = "Process Completed, please check log"
+        self.f.close()
     else:
-        input("--------TRANSACTION FAILED-----------")
+        self.result['text'] = "Process Failed"
+        self.f.close()
 
 
-def responseForVolume(resp,priority):
-    if(resp['result']):
+def responseForVolume(resp,priority,self):
+    if(resp['result'] == True):
         print("---RESULT----")
         no = 0
         for res in resp['data']:
@@ -105,28 +115,52 @@ def responseForVolume(resp,priority):
                 status = "Success"
                 if priority == 2:
                     if(no == 1):
+                        self.ob['text'] = str(status)
+                        self.f.write("Order Buy: "+status)
+                        self.f.write("\n")
                         print("Order Buy: "+status)
                     else:
+                        self.os['text'] = str(status)
+                        self.f.write("Order Sell: "+status)
+                        self.f.write("\n")
                         print("Order Sell: "+status)
                 else:
                     if(no == 1):
+                        self.os['text'] = str(status)
+                        self.f.write("Order Sell: "+status)
+                        self.f.write("\n")
                         print("Order Sell: "+status)
                     else:
+                        self.ob['text'] = str(status)
+                        self.f.write("Order Buy: "+status)
+                        self.f.write("\n")
                         print("Order Buy: "+status)
             else:
                 if priority == 2:                
                     if(no == 1):
+                        self.ob['text'] = str(status+"-"+str(res['error_code']))
+                        self.f.write("Order Buy: "+status+"-"+str(res['error_code']))
+                        self.f.write("\n")
                         print("Order Buy: "+status+"-"+str(res['error_code']))
                     else:
+                        self.os['text'] = str(status+"-"+str(res['error_code']))
+                        self.f.write("Order Sell: "+status+"-"+str(res['error_code']))
+                        self.f.write("\n")
                         print("Order Sell: "+status+"-"+str(res['error_code']))
                 else:
                     if(no == 1):
+                        self.os['text'] = str(status+"-"+str(res['error_code']))
+                        self.f.write("Order Sell: "+status+"-"+str(res['error_code']))
+                        self.f.write("\n")
                         print("Order Sell: "+status+"-"+str(res['error_code']))
                     else:
+                        self.ob['text'] = str(status+"-"+str(res['error_code']))
+                        self.f.write("Order Buy: "+status+"-"+str(res['error_code']))
+                        self.f.write("\n")
                         print("Order Buy: "+status+"-"+str(res['error_code']))
-
+            
     else:
-        print("--------TRANSACTION FAILED-----------")
+        self.result['text'] = "Process Failed"
 
 
 def asset_information(api_key, private_key):
