@@ -23,6 +23,7 @@ class Setup(Frame):
         self.var = IntVar()
         frame = Frame(master)  
         Radiobutton(frame, text="LBank", variable=self.var, value=1).pack(side = RIGHT )
+        Radiobutton(frame, text="Bitmart", variable=self.var, value=2).pack(side = RIGHT )
         frame.grid(row=3, column=1, sticky=W)
 
         self.label2 = Label(master, text="API Key  : ", pady=3 )

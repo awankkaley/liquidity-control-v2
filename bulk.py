@@ -1,9 +1,12 @@
-import asyncio
 from tkinter import *
 import tkinter.ttk as ttk
 import json
-from utils.exchange import orderBatch
 import threading
+
+from utils.exchange import exchangeOrder
+
+
+
 
 class Bulk(Frame):
 
@@ -121,7 +124,7 @@ class Bulk(Frame):
 
             data = json.dumps(list)
             self.order['text'] = str(len(list))
-        orderBatch(data=data,api_key=self.api_key,private_key=self.private_key, acton="add_bulk_order",exchange=self.exchange,priority=2, self=self)
+        exchangeOrder(data=data,api_key=self.api_key,private_key=self.private_key, acton="add_bulk_order",exchange=self.exchange,priority=2, self=self)
         
     def validation(self):
         self.result['text'] = "-"

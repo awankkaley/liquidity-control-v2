@@ -5,7 +5,7 @@ from tkinter import *
 import tkinter.ttk as ttk
 import threading
 import json
-from utils.exchange import get_trading_depth, orderBatch
+from utils.exchange import get_trading_depth, exchangeOrder
 from utils.math_utils import random_float
 
 
@@ -129,11 +129,9 @@ class Volume(Frame):
     def stop(self):
         self.active = False
         self.result['text'] = "Stoped"
-        self.f.close()
 
     def start_process(self):
         self.active = True
-        self.f = open('log-v.txt', 'w')
         min_usdt = self.min_usdt.get()
         max_usdt = self.max_usdt.get()
         min_price_difference = self.min_price_difference.get()
@@ -190,6 +188,7 @@ class Volume(Frame):
         thread = threading.Timer(delay, self.start, (delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals,price_decimals,api_key,private_key,exchange,priority))
         if self.active == True:
             thread.start()
+        self.f = open('log-v.txt', 'a')
         trading_depth = get_trading_depth(market,exchange)
         count = int(self.ttl['text'])+1
         self.ttl['text'] = str(count)
@@ -214,16 +213,17 @@ class Volume(Frame):
             self.pr['text'] = str(random_price) + ' USDT'
             list = []
             if priority == 1:
-                list.append({"symbol":market, "type":'sell', "price":random_price, "amount":random_quantity, "custom_id":''})
-                list.append({"symbol":market, "type":'buy', "price":random_price, "amount":random_quantity, "custom_id":''})
+                list.append({"symbol":market, "type":'sell', "price":random_price, "amount":token_per_order, "custom_id":''})
+                list.append({"symbol":market, "type":'buy', "price":random_price, "amount":token_per_order, "custom_id":''})
             if priority == 2:
-                list.append({"symbol":market, "type":'buy', "price":random_price, "amount":random_quantity, "custom_id":''})
-                list.append({"symbol":market, "type":'sell', "price":random_price, "amount":random_quantity, "custom_id":''})
+                list.append({"symbol":market, "type":'buy', "price":random_price, "amount":token_per_order, "custom_id":''})
+                list.append({"symbol":market, "type":'sell', "price":random_price, "amount":token_per_order, "custom_id":''})
             data = json.dumps(list)
             self.f.write("Data : "+ str(data))
             self.f.write("\n")
-            orderBatch(data=data,api_key=api_key,private_key=private_key,acton="create_volume",exchange=exchange,priority=priority,self=self)
+            exchangeOrder(data=data,api_key=api_key,private_key=private_key,acton="create_volume",exchange=exchange,priority=priority,self=self)
         self.f.write("\n")
+        self.f.close()
 
 
 
