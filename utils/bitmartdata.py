@@ -13,7 +13,7 @@ def get_trading_depth(pair):
 # print(get_trading_depth("DOGE_USDT"))
 
 
-def orderBatch(data, api_key, private_key, acton, priority, self):
+def orderBatch(data, api_key, private_key, acton, priority, memo, self):
     count = 0
     no = 0
     if acton == "add_bulk_order":
@@ -21,7 +21,7 @@ def orderBatch(data, api_key, private_key, acton, priority, self):
             no += 1
             try:
                 res = order(item['symbol'], item['type'], item['price'],
-                            item['amount'], api_key, private_key)
+                            item['amount'], api_key, private_key, memo)
                 if res[0]['code'] == 1000:
                     count += 1
                     self.f.write("\n")
@@ -45,7 +45,7 @@ def orderBatch(data, api_key, private_key, acton, priority, self):
             no += 1
             try:
                 res = order(item['symbol'], item['type'], item['price'],
-                            item['amount'], api_key, private_key)
+                            item['amount'], api_key, private_key, memo)
                 if res[0]['code'] == 1000:
                     status = "Success"
                     if priority == 2:
@@ -131,8 +131,7 @@ def orderBatch(data, api_key, private_key, acton, priority, self):
                         print("Order Buy: "+status+"-Request Failed")
 
 
-def order(pair, side, price, size, api_key, secret_key):
-    memo = "liquiditytest"
+def order(pair, side, price, size, api_key, secret_key, memo):
     spotAPI = APISpot(api_key, secret_key, memo, timeout=(10, 10))
     result = spotAPI.post_submit_order(
         symbol=pair, side=side, type='limit', price=price, size=size)

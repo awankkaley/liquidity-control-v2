@@ -124,7 +124,9 @@ class Bulk(Frame):
 
             data = json.dumps(list)
             self.order['text'] = str(len(list))
-        exchangeOrder(data=data,api_key=self.api_key,private_key=self.private_key, acton="add_bulk_order",exchange=self.exchange,priority=2, self=self)
+            if self.exchange != "2":
+                self.memo = ""
+            exchangeOrder(data=data,api_key=self.api_key,private_key=self.private_key, acton="add_bulk_order",exchange=self.exchange,priority=2,memo=self.memo, self=self)
         
     def validation(self):
         self.result['text'] = "-"
@@ -152,6 +154,8 @@ class Bulk(Frame):
                         self.market = lines[3].replace("\n", "")
                         self.price_decimals = lines[4].replace("\n", "")
                         self.quantity_decimals = lines[5].replace("\n", "")
+                        if self.exchange == "2":
+                            self.memo = lines[6].replace("\n", "")
                         return True
                 except:
                     self.result['text'] = "Please set your configuration first"

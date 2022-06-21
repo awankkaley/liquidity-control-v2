@@ -10,8 +10,8 @@ def get_trading_depth(pair, exchange):
         return depth2(pair=pair)
 
 
-def exchangeOrder(data, api_key, private_key, acton, exchange, priority, self):
+def exchangeOrder(data, api_key, private_key, acton, exchange, priority,memo, self):
     if exchange == "1":
         return orders(data, api_key, private_key, acton, priority, self)
     if exchange == "2":
-        return orders2(data, api_key, private_key, acton, priority, self)
+        return orders2(data, api_key, private_key, acton, priority, memo , self)
