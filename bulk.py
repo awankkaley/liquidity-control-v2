@@ -1,3 +1,4 @@
+from locale import currency
 from tkinter import *
 import tkinter.ttk as ttk
 import json
@@ -6,27 +7,35 @@ import threading
 from utils.exchange import exchangeOrder
 
 
-
-
 class Bulk(Frame):
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
+        currency = "USDT"
+        try:
+            with open('credential.txt') as f:
+                lines = f.readlines()
+                exchange = lines[0].replace("\n", "")
+                if(exchange == '3'):
+                    currency = "IDR"
+        except:
+            currency = "USDT"
         master = Frame(self)
         master.pack(fill=BOTH, expand=True)
         self.par = master
-        self.judul = Label(master, text="ADD BULK ORDER",font="Helvetica 16 bold")
+        self.judul = Label(master, text="ADD BULK ORDER",
+                           font="Helvetica 16 bold")
         self.judul.grid(row=0, column=0, columnspan=2, ipady=15)
 
         self._separator = ttk.Separator(master, orient="horizontal")
         self._separator.grid(row=1, column=0, columnspan=2, sticky="we")
 
-        self.label1 = Label(master, text="Budget (USDT):", pady=3)
+        self.label1 = Label(master, text="Budget "+currency+":", pady=3)
         self.label1.grid(row=2, column=0, ipadx=20, sticky=E)
         self.amount = Entry(master)
         self.amount.grid(row=2, column=1, ipadx=20)
 
-        self.label2 = Label(master, text="Start price  : ", pady=3 )
+        self.label2 = Label(master, text="Start price  : ", pady=3)
         self.label2.grid(row=3, column=0, ipadx=20, sticky=E)
         self.order_start_price = Entry(master)
         self.order_start_price.grid(row=3, column=1, ipadx=20)
@@ -41,17 +50,19 @@ class Bulk(Frame):
         self.order_quantity = Entry(master)
         self.order_quantity.grid(row=5, column=1, ipadx=20)
 
-
         self.label7 = Label(master, text="Order type : ", pady=3)
         self.label7.grid(row=8, column=0, ipadx=20, sticky=E)
         self.order_type = IntVar()
-        frame = Frame(master)  
-        Radiobutton(frame, text="Sell", variable=self.order_type, value=1).pack(side = RIGHT )
-        Radiobutton(frame, text="Buy", variable=self.order_type, value=2).pack(side = RIGHT )
+        frame = Frame(master)
+        Radiobutton(frame, text="Sell", variable=self.order_type,
+                    value=1).pack(side=RIGHT)
+        Radiobutton(frame, text="Buy", variable=self.order_type,
+                    value=2).pack(side=RIGHT)
         frame.grid(row=8, column=1, sticky=W)
 
-        self.proses = Button(master, text="PROSES", command=lambda:threading.Thread(target=self.processBulkOrder()).start())
-        self.proses.grid(row=10, column=0,columnspan=2, pady=10)
+        self.proses = Button(master, text="PROSES", command=lambda: threading.Thread(
+            target=self.processBulkOrder()).start())
+        self.proses.grid(row=10, column=0, columnspan=2, pady=10)
 
         self._separator = ttk.Separator(master, orient="horizontal")
         self._separator.grid(row=11, column=0, columnspan=2, sticky="we")
@@ -62,28 +73,28 @@ class Bulk(Frame):
         self._separator = ttk.Separator(master, orient="horizontal")
         self._separator.grid(row=13, column=0, columnspan=2, sticky="we")
 
-        self.res1 = Label(self.par, text="USDT Per Order : ", pady=3)
+        self.res1 = Label(self.par, text=currency+" Per Order : ", pady=3)
         self.res1.grid(row=14, column=0, ipadx=20, sticky=E)
         self.res2 = Label(self.par, text="")
-        self.res2.grid(row=14, column=1, ipadx=20,sticky=W)
+        self.res2.grid(row=14, column=1, ipadx=20, sticky=W)
 
         self.res3 = Label(self.par, text="Distance per Order : ", pady=3)
         self.res3.grid(row=15, column=0, ipadx=20, sticky=E)
         self.res4 = Label(self.par, text="")
-        self.res4.grid(row=15, column=1, ipadx=20,sticky=W)
+        self.res4.grid(row=15, column=1, ipadx=20, sticky=W)
 
         self.orderl = Label(self.par, text="Total Order : ", pady=3)
         self.orderl.grid(row=16, column=0, ipadx=20, sticky=E)
         self.order = Label(self.par, text="")
-        self.order.grid(row=16, column=1, ipadx=20,sticky=W)
+        self.order.grid(row=16, column=1, ipadx=20, sticky=W)
 
         self.resultl = Label(self.par, text="Success : ", pady=3)
         self.resultl.grid(row=17, column=0, ipadx=20, sticky=E)
         self.success = Label(self.par, text="")
-        self.success.grid(row=17, column=1, ipadx=20,sticky=W)
+        self.success.grid(row=17, column=1, ipadx=20, sticky=W)
 
         self.proses = Button(master, text="Show Log", command=self.open_win)
-        self.proses.grid(row=19, column=0,columnspan=2, pady=10)
+        self.proses.grid(row=19, column=0, columnspan=2, pady=10)
 
     def processBulkOrder(self):
         valid = self.validation()
@@ -100,9 +111,9 @@ class Bulk(Frame):
                 trailing_percentage) / int(order_quantity)
             self.res4['text'] = str(distance_percentage_per_order)
             direction_amplifier = -1 if (int(order_type) == 2) else 1
-            if order_type == 2 :
+            if order_type == 2:
                 order_type = "buy"
-            else :
+            else:
                 order_type = "sell"
             list = []
 
@@ -117,7 +128,7 @@ class Bulk(Frame):
                 token_per_order = round(
                     float(usdt_per_order / price), int(self.quantity_decimals))
                 orderdata = ({"symbol": self.market, "type": order_type,
-                        "price": price, "amount": token_per_order, "custom_id": ''})
+                              "price": price, "amount": token_per_order, "custom_id": ''})
                 self.f.write("\n")
                 self.f.write(str(orderdata))
                 list.append(orderdata)
@@ -126,8 +137,9 @@ class Bulk(Frame):
             self.order['text'] = str(len(list))
             if self.exchange != "2":
                 self.memo = ""
-            exchangeOrder(data=data,api_key=self.api_key,private_key=self.private_key, acton="add_bulk_order",exchange=self.exchange,priority=2,memo=self.memo, self=self)
-        
+            exchangeOrder(data=data, api_key=self.api_key, private_key=self.private_key,
+                          acton="add_bulk_order", exchange=self.exchange, priority=2, memo=self.memo, self=self)
+
     def validation(self):
         self.result['text'] = "-"
         amount = self.amount.get()
@@ -144,7 +156,7 @@ class Bulk(Frame):
                 order_start_price = float(self.order_start_price.get())
                 trailing_percentage = float(self.trailing_percentage.get())
                 order_quantity = int(self.order_quantity.get())
-                order_type = int(self.order_type.get())     
+                order_type = int(self.order_type.get())
                 try:
                     with open('credential.txt') as f:
                         lines = f.readlines()
@@ -163,14 +175,12 @@ class Bulk(Frame):
             except:
                 self.result['text'] = "Field value not valid"
                 return False
-    
+
     def open_win(self):
-            
-            new= Toplevel(self)
-            new.title("Log ")   
-            f = open("log.txt")
-            t = Text(new,wrap = NONE)
-            t.insert(END,str(f.read()))
-            t.pack()
 
-
+        new = Toplevel(self)
+        new.title("Log ")
+        f = open("log.txt")
+        t = Text(new, wrap=NONE)
+        t.insert(END, str(f.read()))
+        t.pack()
