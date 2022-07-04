@@ -1,0 +1,51 @@
+------DATA------
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 600.0, 'amount': 20.0, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 599.3, 'amount': 20.0, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 598.6, 'amount': 20.0, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 597.8, 'amount': 20.1, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 597.1, 'amount': 20.1, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 596.4, 'amount': 20.1, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 595.7, 'amount': 20.1, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 595.0, 'amount': 20.2, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 594.2, 'amount': 20.2, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 593.5, 'amount': 20.2, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 592.8, 'amount': 20.2, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 592.1, 'amount': 20.3, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 591.4, 'amount': 20.3, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 590.6, 'amount': 20.3, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 589.9, 'amount': 20.3, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 589.2, 'amount': 20.4, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 588.5, 'amount': 20.4, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 587.8, 'amount': 20.4, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 587.0, 'amount': 20.4, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 586.3, 'amount': 20.5, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 585.6, 'amount': 20.5, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 584.9, 'amount': 20.5, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 584.2, 'amount': 20.5, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 583.4, 'amount': 20.6, 'custom_id': ''}
+{'symbol': 'doge_idr', 'type': 'buy', 'price': 582.7, 'amount': 20.6, 'custom_id': ''}
+Order 1: Sukses
+Order 2: Sukses
+Order 3: Sukses
+Order 4: Sukses
+Order 5: Sukses
+Order 6: Sukses
+Order 7: Sukses
+Order 8: Sukses
+Order 9: Sukses
+Order 10: Sukses
+Order 11: Sukses
+Order 12: Sukses
+Order 13: Sukses
+Order 14: Sukses
+Order 15: Sukses
+Order 16: Sukses
+Order 17: Sukses
+Order 18: Failed -{'success': 0, 'error': 'Insufficient balance.'}
+Order 19: Failed -{'success': 0, 'error': 'Insufficient balance.'}
+Order 20: Failed -{'success': 0, 'error': 'Insufficient balance.'}
+Order 21: Failed -{'success': 0, 'error': 'Insufficient balance.'}
+Order 22: Failed -{'success': 0, 'error': 'Insufficient balance.'}
+Order 23: Failed -{'success': 0, 'error': 'Insufficient balance.'}
+Order 24: Failed -{'success': 0, 'error': 'Insufficient balance.'}
+Order 25: Failed -{'success': 0, 'error': 'Insufficient balance.'}

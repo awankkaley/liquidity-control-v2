@@ -22,8 +22,9 @@ class Setup(Frame):
         self.label1.grid(row=3, column=0, ipadx=20, sticky=E)
         self.var = IntVar()
         frame = Frame(master)  
-        Radiobutton(frame, text="LBank", variable=self.var, value=1, command=self.on_select).pack(side = RIGHT )
+        Radiobutton(frame, text="LBank", variable=self.var, value=1, command=self.on_select).pack(side = LEFT )
         Radiobutton(frame, text="Bitmart", variable=self.var, value=2, command=self.on_select).pack(side= LEFT )
+        Radiobutton(frame, text="Indodax", variable=self.var, value=3, command=self.on_select).pack(side= LEFT )
         frame.grid(row=3, column=1, sticky=W)
 
         self.label2 = Label(master, text="API Key  : ", pady=3 )
@@ -67,7 +68,7 @@ class Setup(Frame):
         self.result.grid(row=12, column=0, columnspan=2, sticky="we")
 
     def on_select(self):
-        if self.var.get() == 1:
+        if self.var.get() != 2:
             self.label7.grid_forget()
             self.memo.grid_forget()
         else:
