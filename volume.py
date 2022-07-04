@@ -13,6 +13,15 @@ class Volume(Frame):
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
+        currency = "USDT"
+        try:
+            with open('credential.txt') as f:
+                lines = f.readlines()
+                exchange = lines[0].replace("\n", "")
+                if(exchange == '3'):
+                    currency = "IDR"
+        except:
+            currency = "USDT"
         master = Frame(self)
         master.pack(fill=BOTH, expand=True)
         self.par = master
@@ -25,18 +34,18 @@ class Volume(Frame):
         self._separator.grid(row=1, column=0, columnspan=2, sticky="we")
 
         self.label1 = Label(
-            master, text="Random min quantity (USDT) :", pady=3)
+            master, text="Random min quantity ("+currency+") :", pady=3)
         self.label1.grid(row=2, column=0, ipadx=20, sticky=E)
         self.min_usdt = Entry(master)
         self.min_usdt.grid(row=2, column=1, ipadx=20)
 
         self.label2 = Label(
-            master, text="Random max quantity (USDT) : ", pady=3)
+            master, text="Random max quantity ("+currency+") : ", pady=3)
         self.label2.grid(row=3, column=0, ipadx=20, sticky=E)
         self.max_usdt = Entry(master)
         self.max_usdt.grid(row=3, column=1, ipadx=20)
 
-        self.label3 = Label(master, text="Min Difference  (USDT) : ", pady=3)
+        self.label3 = Label(master, text="Min Difference  ("+currency+") : ", pady=3)
         self.label3.grid(row=4, column=0, ipadx=20, sticky=E)
         self.min_price_difference = Entry(master)
         self.min_price_difference.grid(row=4, column=1, ipadx=20)
@@ -48,13 +57,13 @@ class Volume(Frame):
         self.delay.grid(row=5, column=1, ipadx=20)
 
         self.label5 = Label(
-            master, text="Maximum limit price (USDT): : ", pady=3)
+            master, text="Maximum limit price ("+currency+"): : ", pady=3)
         self.label5.grid(row=6, column=0, ipadx=20, sticky=E)
         self.max_limit_price = Entry(master)
         self.max_limit_price.grid(row=6, column=1, ipadx=20)
 
         self.label6 = Label(
-            master, text="Minimum limit price (USDT): : ", pady=3)
+            master, text="Minimum limit price ("+currency+"): : ", pady=3)
         self.label6.grid(row=7, column=0, ipadx=20, sticky=E)
         self.min_limit_price = Entry(master)
         self.min_limit_price.grid(row=7, column=1, ipadx=20)
@@ -136,7 +145,7 @@ class Volume(Frame):
         self.os.grid(row=23, column=1, ipadx=20, sticky=W)
 
         self.proses = Button(master, text="Show Log", command=self.open_win)
-        self.proses.grid(row=25, column=0,columnspan=2, pady=10)
+        self.proses.grid(row=25, column=0, columnspan=2, pady=10)
 
     def stop(self):
         self.active = False
