@@ -1,7 +1,7 @@
 import json
 from logging import exception
-from bitmart.api_account import APIAccount
-from bitmart.api_spot import APISpot
+from utils.bitmart.api_account import APIAccount
+from utils.bitmart.api_spot import APISpot
 
 
 def get_trading_depth(pair):
@@ -33,9 +33,9 @@ def orderBatch(data, api_key, private_key, acton, priority, memo, self):
                     self.f.write("Order "+str(no)+": Failed -" +
                                  str(res[0]['code']))
                     print("Order "+str(no)+": Failed -"+str(res[0]['code']))
-            except:
+            except Exception as e:
                 self.f.write("\n")
-                self.f.write("Order "+str(no)+": Request Failed")
+                self.f.write("Order "+str(no)+": Request Failed"+str(e))
                 print("Order "+str(no)+": Request Failed")
         self.success['text'] = str(count)
         self.result['text'] = "Process Completed, please check log"
@@ -75,37 +75,37 @@ def orderBatch(data, api_key, private_key, acton, priority, memo, self):
                     if priority == 2:
                         if(no == 1):
                             self.ob['text'] = str(
-                                status+"-"+str(res['error_code']))
+                                status+"-"+str(res))
                             self.f.write("Order Buy: "+status +
-                                         "-"+str(res['error_code']))
+                                         "-"+str(res))
                             self.f.write("\n")
                             print("Order Buy: "+status +
-                                  "-"+str(res['error_code']))
+                                  "-"+str(res))
                         else:
                             self.os['text'] = str(
-                                status+"-"+str(res['error_code']))
+                                status+"-"+str(res))
                             self.f.write("Order Sell: "+status +
-                                         "-"+str(res['error_code']))
+                                         "-"+str(res))
                             self.f.write("\n")
                             print("Order Sell: "+status +
-                                  "-"+str(res['error_code']))
+                                  "-"+str(res))
                     else:
                         if(no == 1):
                             self.os['text'] = str(
-                                status+"-"+str(res['error_code']))
+                                status+"-"+str(res))
                             self.f.write("Order Sell: "+status +
-                                         "-"+str(res['error_code']))
+                                         "-"+str(res))
                             self.f.write("\n")
                             print("Order Sell: "+status +
-                                  "-"+str(res['error_code']))
+                                  "-"+str(res))
                         else:
                             self.ob['text'] = str(
-                                status+"-"+str(res['error_code']))
+                                status+"-"+str(res))
                             self.f.write("Order Buy: "+status +
-                                         "-"+str(res['error_code']))
+                                         "-"+str(res))
                             self.f.write("\n")
                             print("Order Buy: "+status +
-                                  "-"+str(res['error_code']))
+                                  "-"+str(res))
             except Exception as e:
                 print("------ERRROOOORRRR------- : "+str(e))
                 if priority == 2:
@@ -161,7 +161,10 @@ def history(pair, status):
     print(result[0]['data'])
 
 
-def get_info(api_key, secret_key, memo):
+def get_info():
+    api_key = "f75d7a56689230de4e8aaf1139181308330433f1"
+    secret_key = "b8919eef8b955c754bf8c41bf906f09858c2bb510cacd801cf21b6f1b37112c5"
+    memo = "liquiditytest"
     api_account = APIAccount(api_key, secret_key, memo, timeout=(10, 10))
     result = api_account.get_wallet(currency='USDT')
     usdt = result[0]['data']['wallet'][0]['available']
