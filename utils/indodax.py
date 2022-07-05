@@ -1,8 +1,10 @@
 
+from collections import OrderedDict
 import hashlib
 import hmac
 import json
 import time
+from urllib import response
 
 import requests
 
@@ -19,7 +21,7 @@ def orderBatch(data, api_key, private_key, acton, priority, self):
         for item in json.loads(data):
             no += 1
             if(no % 10 == 0):
-                time.sleep(6)
+                time.sleep(1.2)
             try:
                 res = order(item['symbol'], item['type'], item['price'],
                             item['amount'], api_key, private_key)
@@ -34,7 +36,8 @@ def orderBatch(data, api_key, private_key, acton, priority, self):
                     self.f.write("Order "+str(no)+": Failed -" +
                                  str(res))
                     print("Order "+str(no)+": Failed -"+str(res))
-            except:
+            except e:
+                print(str(e))
                 self.f.write("\n")
                 self.f.write("Order "+str(no)+": Request Failed")
                 print("Order "+str(no)+": Request Failed")
@@ -182,10 +185,15 @@ def order(pair, side, price, size, api_key, secret_key):
     par["timestamp"] = timestamp
     par["type"] = type
 
-    sign = generateSignature(par, bytes(secret_key, 'utf-8'))
-    header = {"Key": api_key, "Sign": sign}
-    response = requests.post(url=BASE_URL+"/tapi", headers=header, data=par)
+    sorted_par = {}
+    param = sorted(par.items())
+    for i in param:
+        sorted_par[i[0]] = i[1]
 
+    sign = generateSignature(sorted_par, bytes(secret_key, 'utf-8'))
+    header = {"Key": api_key, "Sign": sign}
+    response = requests.post(url=BASE_URL+"/tapi",
+                             headers=header, data=sorted_par)
     print(response.json())
     return response.json()
 
@@ -212,8 +220,8 @@ def open_order(secretKey, api_key):
 def cancel_order(secretKey, api_key, id):
     timestamp = get_time_stamp()
     method = "cancelOrder"
-    pair = "doge_idr"
-    type = "sell"
+    pair = "ten_idr"
+    type = "buy"
 
     par = {}
     par["method"] = method
@@ -232,5 +240,29 @@ def cancel_order(secretKey, api_key, id):
 # cancel_order(
 #     api_key="QF6RJTKZ-ESDUVZO3-SBCH4OWS-RJKKFBEW-X72LOPYX",
 #     secretKey="907fb24c24633e0501ea6f2ce39dafd396ab00335299de5cf803508078b6768a106bf2d9305a72ff",
-#     id="54562936"
+#     id="11510527"
 # )
+
+def get_info(secretKey, api_key):
+    timestamp = get_time_stamp()
+    method2 = "getInfo"
+    par = {}
+    par["method"] = method2
+    par["timestamp"] = timestamp
+    sign = generateSignature(par, bytes(secretKey, 'utf-8'))
+    header = {"Key": api_key, "Sign": sign}
+    response = requests.post(url=BASE_URL+"/tapi", headers=header, data=par)
+    res = response.json()
+    idr = float(res['return']['balance']['idr'])
+    try:
+        htp = float(res['return']['balance']['hitop'])
+    except:
+        htp = 0
+
+    return [idr, htp]
+
+
+# print(get_info(
+#     api_key="QF6RJTKZ-ESDUVZO3-SBCH4OWS-RJKKFBEW-X72LOPYX",
+#     secretKey="907fb24c24633e0501ea6f2ce39dafd396ab00335299de5cf803508078b6768a106bf2d9305a72ff"
+# ))

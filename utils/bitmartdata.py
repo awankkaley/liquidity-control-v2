@@ -1,6 +1,7 @@
 import json
 from logging import exception
-from utils.bitmart.api_spot import APISpot
+from bitmart.api_account import APIAccount
+from bitmart.api_spot import APISpot
 
 
 def get_trading_depth(pair):
@@ -159,4 +160,17 @@ def history(pair, status):
     result = spotAPI.get_user_orders_v2(symbol=pair, status=status, N=100)
     print(result[0]['data'])
 
-# history("DOGE_USDT",4)
+
+def get_info(api_key, secret_key, memo):
+    api_account = APIAccount(api_key, secret_key, memo, timeout=(10, 10))
+    result = api_account.get_wallet(currency='USDT')
+    usdt = result[0]['data']['wallet'][0]['available']
+    result2 = api_account.get_wallet(currency='HITOP')
+    try:
+        hitop = result2[0]['data']['wallet'][0]['available']
+    except:
+        hitop = 0
+    return [usdt,hitop]
+
+# print(get_info())
+
