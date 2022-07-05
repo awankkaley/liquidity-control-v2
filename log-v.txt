@@ -1,4 +1,0 @@
-Data : [{"symbol": "ten_idr", "type": "sell", "price": 363.1, "amount": 34.0, "custom_id": ""}, {"symbol": "ten_idr", "type": "buy", "price": 363.1, "amount": 34.0, "custom_id": ""}]
-Order Sell: Failed-{'success': 0, 'error': 'Insufficient balance.'}
-Order Buy: Success
-
