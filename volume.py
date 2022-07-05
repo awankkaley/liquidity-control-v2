@@ -22,6 +22,7 @@ class Volume(Frame):
                     currency = "IDR"
         except:
             currency = "USDT"
+        self.currency = currency
         master = Frame(self)
         master.pack(fill=BOTH, expand=True)
         self.par = master
@@ -229,16 +230,16 @@ class Volume(Frame):
         if min_price_difference <= price_difference and highest_buy <= max_limit_price and lowest_sell >= min_limit_price:
             random_quantity = random_float(
                 min_usdt, max_usdt, quantity_decimals)
-            print('BuySell Quantity: ' + str(random_quantity) + ' USDT')
-            self.qty['text'] = str(random_quantity) + ' USDT'
+            print('BuySell Quantity: ' + str(random_quantity) + " "+self.currency)
+            self.qty['text'] = str(random_quantity) + " "+self.currency
             random_price = random_float(
                 highest_buy, lowest_sell, price_decimals)
             token_per_order = round(
                 float(random_quantity / random_price), int(quantity_decimals))
             print('BuySell Quantity Token: ' + str(token_per_order))
             self.qty_token['text'] = str(token_per_order)
-            print('BuySell Price: ' + str(random_price) + ' USDT')
-            self.pr['text'] = str(random_price) + ' USDT'
+            print('BuySell Price: ' + str(random_price) + " "+self.currency)
+            self.pr['text'] = str(random_price) + " "+self.currency
             list = []
             if priority == 1:
                 list.append({"symbol": market, "type": 'sell', "price": random_price,
