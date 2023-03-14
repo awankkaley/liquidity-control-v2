@@ -46,7 +46,8 @@ class Volume(Frame):
         self.max_usdt = Entry(master)
         self.max_usdt.grid(row=3, column=1, ipadx=20)
 
-        self.label3 = Label(master, text="Min Difference  ("+currency+") : ", pady=3)
+        self.label3 = Label(
+            master, text="Min Difference  ("+currency+") : ", pady=3)
         self.label3.grid(row=4, column=0, ipadx=20, sticky=E)
         self.min_price_difference = Entry(master)
         self.min_price_difference.grid(row=4, column=1, ipadx=20)
@@ -73,6 +74,8 @@ class Volume(Frame):
         self.label7.grid(row=8, column=0, ipadx=20, sticky=E)
         self.priority = IntVar()
         frame = Frame(master)
+        Radiobutton(frame, text="Mix",
+                    variable=self.priority, value=3).pack(side=RIGHT)
         Radiobutton(frame, text="Sell First",
                     variable=self.priority, value=1).pack(side=RIGHT)
         Radiobutton(frame, text="Buy First",
@@ -163,6 +166,7 @@ class Volume(Frame):
         priority = self.priority.get()
         if self.validation() == True:
             self.result['text'] = "Running....."
+            self.count = 1
             self.start(float(delay), float(min_price_difference), float(min_usdt), float(max_usdt), float(max_limit_price), float(min_limit_price), self.market, int(
                 self.quantity_decimals), int(self.price_decimals), str(self.api_key), str(self.private_key), str(self.exchange), int(priority))
 
@@ -240,6 +244,7 @@ class Volume(Frame):
             self.qty_token['text'] = str(token_per_order)
             print('BuySell Price: ' + str(random_price) + " "+self.currency)
             self.pr['text'] = str(random_price) + " "+self.currency
+            print("COUNT : "+str(self.count))
             list = []
             if priority == 1:
                 list.append({"symbol": market, "type": 'sell', "price": random_price,
@@ -251,11 +256,23 @@ class Volume(Frame):
                             "amount": token_per_order, "custom_id": ''})
                 list.append({"symbol": market, "type": 'sell', "price": random_price,
                             "amount": token_per_order, "custom_id": ''})
+            if priority == 3:
+                if self.count % 2 == 0:
+                    list.append({"symbol": market, "type": 'buy', "price": random_price,
+                                "amount": token_per_order, "custom_id": ''})
+                    list.append({"symbol": market, "type": 'sell', "price": random_price,
+                                "amount": token_per_order, "custom_id": ''})
+                else:
+                    list.append({"symbol": market, "type": 'sell', "price": random_price,
+                                "amount": token_per_order, "custom_id": ''})    
+                    list.append({"symbol": market, "type": 'buy', "price": random_price,
+                                "amount": token_per_order, "custom_id": ''})                
             data = json.dumps(list)
             self.f.write("Data : " + str(data))
             self.f.write("\n")
             exchangeOrder(data=data, api_key=api_key, private_key=private_key, acton="create_volume",
                           exchange=exchange, priority=priority, memo=self.memo, self=self)
+            self.count += 1
         self.f.write("\n")
         self.f.close()
 
