@@ -25,6 +25,7 @@ class Setup(Frame):
         Radiobutton(frame, text="LBank", variable=self.var, value=1, command=self.on_select).pack(side = LEFT )
         Radiobutton(frame, text="Bitmart", variable=self.var, value=2, command=self.on_select).pack(side= LEFT )
         Radiobutton(frame, text="Indodax", variable=self.var, value=3, command=self.on_select).pack(side= LEFT )
+        Radiobutton(frame, text="MEXC", variable=self.var, value=4, command=self.on_select).pack(side = LEFT )
         frame.grid(row=3, column=1, sticky=W)
 
         self.label2 = Label(master, text="API Key  : ", pady=3 )
