@@ -168,14 +168,13 @@ class Volume(Frame):
         min_price_difference = self.min_price_difference.get()
         delay_min = self.delay_min.get()
         delay_max = self.delay_max.get()
-        delay = random_float(float(delay_min), float(delay_max), 1)
         max_limit_price = self.max_limit_price.get()
         min_limit_price = self.min_limit_price.get()
         priority = self.priority.get()
         if self.validation() == True:
             self.result['text'] = "Running....."
             self.count = 1
-            self.start(float(delay), float(min_price_difference), float(min_usdt), float(max_usdt), float(max_limit_price), float(min_limit_price), self.market, int(
+            self.start(delay_min,delay_max,float(min_price_difference), float(min_usdt), float(max_usdt), float(max_limit_price), float(min_limit_price), self.market, int(
                 self.quantity_decimals), int(self.price_decimals), str(self.api_key), str(self.private_key), str(self.exchange), int(priority))
 
     def validation(self):
@@ -221,7 +220,8 @@ class Volume(Frame):
                 self.result['text'] = "Field not valid"
                 return False
 
-    def start(self, delay, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals, price_decimals, api_key, private_key, exchange, priority):
+    def start(self, delay_min, delay_max, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals, price_decimals, api_key, private_key, exchange, priority):
+        delay = random_float(float(delay_min), float(delay_max), 1)
         thread = threading.Timer(delay, self.start, (delay, min_price_difference, min_usdt, max_usdt, max_limit_price,
                                  min_limit_price, market, quantity_decimals, price_decimals, api_key, private_key, exchange, priority))
         if self.active == True:
