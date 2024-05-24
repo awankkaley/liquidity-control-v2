@@ -27,6 +27,7 @@ class Setup(Frame):
         Radiobutton(frame, text="Indodax", variable=self.var, value=3, command=self.on_select).pack(side= LEFT )
         Radiobutton(frame, text="MEXC", variable=self.var, value=4, command=self.on_select).pack(side = LEFT )
         Radiobutton(frame, text="Flybit", variable=self.var, value=5, command=self.on_select).pack(side = LEFT )
+        Radiobutton(frame, text="Gate.io", variable=self.var, value=6, command=self.on_select).pack(side = LEFT )
         frame.grid(row=3, column=1, sticky=W)
 
         self.label2 = Label(master, text="API Key  : ", pady=3 )

@@ -53,25 +53,31 @@ class Volume(Frame):
         self.min_price_difference.grid(row=4, column=1, ipadx=20)
 
         self.label4 = Label(
-            master, text="Delay in seconds (Ex: 5.5) : ", pady=3)
+            master, text="Min Delay in seconds (Ex: 5.5) : ", pady=3)
         self.label4.grid(row=5, column=0, ipadx=20, sticky=E)
-        self.delay = Entry(master)
-        self.delay.grid(row=5, column=1, ipadx=20)
-
+        self.delay_min = Entry(master)
+        self.delay_min.grid(row=5, column=1, ipadx=20)
+        
         self.label5 = Label(
-            master, text="Maximum limit price ("+currency+"): : ", pady=3)
+        master, text="Max Delay in seconds (Ex: 6.5) : ", pady=3)
         self.label5.grid(row=6, column=0, ipadx=20, sticky=E)
-        self.max_limit_price = Entry(master)
-        self.max_limit_price.grid(row=6, column=1, ipadx=20)
+        self.delay_max = Entry(master)
+        self.delay_max.grid(row=6, column=1, ipadx=20)
 
         self.label6 = Label(
-            master, text="Minimum limit price ("+currency+"): : ", pady=3)
+            master, text="Maximum limit price ("+currency+"): : ", pady=3)
         self.label6.grid(row=7, column=0, ipadx=20, sticky=E)
-        self.min_limit_price = Entry(master)
-        self.min_limit_price.grid(row=7, column=1, ipadx=20)
+        self.max_limit_price = Entry(master)
+        self.max_limit_price.grid(row=7, column=1, ipadx=20)
 
-        self.label7 = Label(master, text="Priority : ", pady=3)
+        self.label7 = Label(
+            master, text="Minimum limit price ("+currency+"): : ", pady=3)
         self.label7.grid(row=8, column=0, ipadx=20, sticky=E)
+        self.min_limit_price = Entry(master)
+        self.min_limit_price.grid(row=8, column=1, ipadx=20)
+
+        self.label8 = Label(master, text="Priority : ", pady=3)
+        self.label8.grid(row=10, column=0, ipadx=20, sticky=E)
         self.priority = IntVar()
         frame = Frame(master)
         Radiobutton(frame, text="Mix",
@@ -80,73 +86,73 @@ class Volume(Frame):
                     variable=self.priority, value=1).pack(side=RIGHT)
         Radiobutton(frame, text="Buy First",
                     variable=self.priority, value=2).pack(side=RIGHT)
-        frame.grid(row=8, column=1, sticky=W)
+        frame.grid(row=10, column=1, sticky=W)
 
         self.proses = Button(master, text="START", command=lambda: threading.Thread(
             target=self.start_process()).start())
-        self.proses.grid(row=10, column=0, pady=10, sticky=E)
+        self.proses.grid(row=11, column=0, pady=10, sticky=E)
 
         self.proses = Button(master, text="STOP", command=self.stop)
-        self.proses.grid(row=10, column=1, pady=10, sticky=W)
+        self.proses.grid(row=11, column=1, pady=10, sticky=W)
 
         self._separator = ttk.Separator(master, orient="horizontal")
-        self._separator.grid(row=11, column=0, columnspan=2, sticky="we")
+        self._separator.grid(row=12, column=0, columnspan=2, sticky="we")
 
         self.result = Label(master, text="-", pady=3)
-        self.result.grid(row=12, column=0, columnspan=2, sticky="we")
+        self.result.grid(row=13, column=0, columnspan=2, sticky="we")
 
         self._separator = ttk.Separator(master, orient="horizontal")
-        self._separator.grid(row=13, column=0, columnspan=2, sticky="we")
+        self._separator.grid(row=14, column=0, columnspan=2, sticky="we")
 
         self.res1 = Label(self.par, text="Time : ", pady=3)
-        self.res1.grid(row=14, column=0, ipadx=20, sticky=E)
+        self.res1.grid(row=15, column=0, ipadx=20, sticky=E)
         self.time = Label(self.par, text="")
-        self.time.grid(row=14, column=1, ipadx=20, sticky=W)
+        self.time.grid(row=15, column=1, ipadx=20, sticky=W)
 
         self.res1 = Label(self.par, text="Lowest : ", pady=3)
-        self.res1.grid(row=15, column=0, ipadx=20, sticky=E)
+        self.res1.grid(row=16, column=0, ipadx=20, sticky=E)
         self.lowest = Label(self.par, text="")
-        self.lowest.grid(row=15, column=1, ipadx=20, sticky=W)
+        self.lowest.grid(row=16, column=1, ipadx=20, sticky=W)
 
         self.res3 = Label(self.par, text="Highest : ", pady=3)
-        self.res3.grid(row=16, column=0, ipadx=20, sticky=E)
+        self.res3.grid(row=17, column=0, ipadx=20, sticky=E)
         self.highest = Label(self.par, text="")
-        self.highest.grid(row=16, column=1, ipadx=20, sticky=W)
+        self.highest.grid(row=17, column=1, ipadx=20, sticky=W)
 
         self.orderl = Label(self.par, text="Price Difference: ", pady=3)
-        self.orderl.grid(row=17, column=0, ipadx=20, sticky=E)
+        self.orderl.grid(row=18, column=0, ipadx=20, sticky=E)
         self.diff = Label(self.par, text="")
-        self.diff.grid(row=17, column=1, ipadx=20, sticky=W)
+        self.diff.grid(row=18, column=1, ipadx=20, sticky=W)
 
         self.resultl = Label(self.par, text="Quantity : ", pady=3)
-        self.resultl.grid(row=18, column=0, ipadx=20, sticky=E)
+        self.resultl.grid(row=19, column=0, ipadx=20, sticky=E)
         self.qty = Label(self.par, text="")
-        self.qty.grid(row=18, column=1, ipadx=20, sticky=W)
+        self.qty.grid(row=19, column=1, ipadx=20, sticky=W)
 
         self.resultl = Label(self.par, text="Quantity Token: ", pady=3)
-        self.resultl.grid(row=19, column=0, ipadx=20, sticky=E)
+        self.resultl.grid(row=20, column=0, ipadx=20, sticky=E)
         self.qty_token = Label(self.par, text="")
-        self.qty_token.grid(row=19, column=1, ipadx=20, sticky=W)
+        self.qty_token.grid(row=20, column=1, ipadx=20, sticky=W)
 
         self.resultl = Label(self.par, text="Price : ", pady=3)
-        self.resultl.grid(row=20, column=0, ipadx=20, sticky=E)
+        self.resultl.grid(row=21, column=0, ipadx=20, sticky=E)
         self.pr = Label(self.par, text="")
-        self.pr.grid(row=20, column=1, ipadx=20, sticky=W)
+        self.pr.grid(row=21, column=1, ipadx=20, sticky=W)
 
         self.resultl = Label(self.par, text="Executed : ", pady=3)
-        self.resultl.grid(row=21, column=0, ipadx=20, sticky=E)
+        self.resultl.grid(row=22, column=0, ipadx=20, sticky=E)
         self.ttl = Label(self.par, text="0")
-        self.ttl.grid(row=21, column=1, ipadx=20, sticky=W)
+        self.ttl.grid(row=22, column=1, ipadx=20, sticky=W)
 
         self.resultl = Label(self.par, text="Order Buy : ", pady=3)
-        self.resultl.grid(row=22, column=0, ipadx=20, sticky=E)
+        self.resultl.grid(row=23, column=0, ipadx=20, sticky=E)
         self.ob = Label(self.par, text="")
-        self.ob.grid(row=22, column=1, ipadx=20, sticky=W)
+        self.ob.grid(row=23, column=1, ipadx=20, sticky=W)
 
         self.resultl = Label(self.par, text="Order Sell : ", pady=3)
-        self.resultl.grid(row=23, column=0, ipadx=20, sticky=E)
+        self.resultl.grid(row=24, column=0, ipadx=20, sticky=E)
         self.os = Label(self.par, text="")
-        self.os.grid(row=23, column=1, ipadx=20, sticky=W)
+        self.os.grid(row=24, column=1, ipadx=20, sticky=W)
 
         self.proses = Button(master, text="Show Log", command=self.open_win)
         self.proses.grid(row=25, column=0, columnspan=2, pady=10)
@@ -160,7 +166,9 @@ class Volume(Frame):
         min_usdt = self.min_usdt.get()
         max_usdt = self.max_usdt.get()
         min_price_difference = self.min_price_difference.get()
-        delay = self.delay.get()
+        delay_min = self.delay_min.get()
+        delay_max = self.delay_max.get()
+        delay = random_float(float(delay_min), float(delay_max), 1)
         max_limit_price = self.max_limit_price.get()
         min_limit_price = self.min_limit_price.get()
         priority = self.priority.get()
@@ -175,12 +183,13 @@ class Volume(Frame):
         min_usdt = self.min_usdt.get()
         max_usdt = self.max_usdt.get()
         min_price_difference = self.min_price_difference.get()
-        delay = self.delay.get()
+        delay_min = self.delay_min.get()
+        delay_max = self.delay_max.get()
         max_limit_price = self.max_limit_price.get()
         min_limit_price = self.min_limit_price.get()
         priority = self.priority.get()
 
-        if min_usdt == "" or max_usdt == "" or min_price_difference == "" or delay == "" or max_limit_price == "" or min_limit_price == "" or priority == 0:
+        if min_usdt == "" or max_usdt == "" or min_price_difference == "" or delay_min == "" or delay_max == "" or max_limit_price == "" or min_limit_price == "" or priority == 0:
             self.result['text'] = "Field cannot be empty"
             return False
         else:
@@ -188,7 +197,8 @@ class Volume(Frame):
                 min_usdt = float(self.min_usdt.get())
                 max_usdt = float(self.max_usdt.get())
                 min_price_difference = float(self.min_price_difference.get())
-                delay = float(self.delay.get())
+                delay_min = float(self.delay_min.get())
+                delay_max = float(self.delay_max.get())
                 max_limit_price = float(self.max_limit_price.get())
                 min_limit_price = float(self.min_limit_price.get())
                 priority = int(self.priority.get())
