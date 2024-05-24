@@ -222,7 +222,7 @@ class Volume(Frame):
 
     def start(self, delay_min, delay_max, min_price_difference, min_usdt, max_usdt, max_limit_price, min_limit_price, market, quantity_decimals, price_decimals, api_key, private_key, exchange, priority):
         delay = random_float(float(delay_min), float(delay_max), 1)
-        thread = threading.Timer(delay, self.start, (delay, min_price_difference, min_usdt, max_usdt, max_limit_price,
+        thread = threading.Timer(delay, self.start, (delay_min, delay_max, min_price_difference, min_usdt, max_usdt, max_limit_price,
                                  min_limit_price, market, quantity_decimals, price_decimals, api_key, private_key, exchange, priority))
         if self.active == True:
             thread.start()
