@@ -10,8 +10,6 @@ import requests
 
 
 BASE_URL = "https://indodax.com"
-# secretKey = "907fb24c24633e0501ea6f2ce39dafd396ab00335299de5cf803508078b6768a106bf2d9305a72ff"
-# apiKey = "QF6RJTKZ-ESDUVZO3-SBCH4OWS-RJKKFBEW-X72LOPYX"
 
 
 def orderBatch(data, api_key, private_key, acton, priority, self):
