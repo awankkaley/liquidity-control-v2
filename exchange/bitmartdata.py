@@ -1,7 +1,7 @@
 import json
 from logging import exception
-from utils.bitmart.api_account import APIAccount
-from utils.bitmart.api_spot import APISpot
+from exchange.bitmart.api_account import APIAccount
+from exchange.bitmart.api_spot import APISpot
 
 
 def get_trading_depth(pair):

@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 import json
 import threading
 
-from utils.exchange import exchangeOrder
+from exchange.exchange import exchangeOrder
 
 
 class Bulk(Frame):

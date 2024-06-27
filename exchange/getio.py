@@ -60,7 +60,6 @@ def order(pair, side, price, size, api_key, secret_key):
     
     response = requests.post(url=full_url,
                              headers=sign_headers, data=json.dumps(par))
-    print(response.json())
     return response.json()
 
 def orderBatch(data, api_key, private_key, acton, priority, self):

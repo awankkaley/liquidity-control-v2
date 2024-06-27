@@ -14,7 +14,7 @@ class Home(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
         container = Frame(self)
-        self.minsize(500, 100)
+        self.minsize(500, 120)
         self.menubar = Menu(container)
         self.config(menu=self.menubar)
         self.title("LIQUIDITY CONTROL")

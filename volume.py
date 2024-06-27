@@ -5,8 +5,8 @@ from tkinter import *
 import tkinter.ttk as ttk
 import threading
 import json
-from utils.exchange import get_trading_depth, exchangeOrder
-from utils.math_utils import random_float
+from exchange.exchange import get_trading_depth, exchangeOrder
+from exchange.math_utils import random_float
 
 
 class Volume(Frame):
