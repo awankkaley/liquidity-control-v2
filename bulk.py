@@ -16,8 +16,10 @@ class Bulk(Frame):
             with open('credential.txt') as f:
                 lines = f.readlines()
                 exchange = lines[0].replace("\n", "")
-                if(exchange == '3'):
-                    currency = "IDR"
+                if exchange == "3":
+                    currency = lines[3].replace("\n", "").split("_")[1].upper()
+                if exchange == "7":
+                    currency = lines[3].replace("\n", "").split("-")[1].upper()
         except:
             currency = "USDT"
         master = Frame(self)
@@ -130,7 +132,6 @@ class Bulk(Frame):
                 orderdata = ({"symbol": self.market, "type": order_type,
                               "price": price, "amount": token_per_order, "custom_id": ''})
                 self.f.write("\n")
-                self.f.write(str(orderdata))
                 list.append(orderdata)
 
             data = json.dumps(list)

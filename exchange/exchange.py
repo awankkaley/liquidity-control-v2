@@ -1,11 +1,21 @@
 from time import sleep
 from exchange.lbank import get_trading_depth as depth, orderBatch as orders
 from exchange.bitmartdata import get_trading_depth as depth2, orderBatch as orders2
-from exchange.indodax import get_trading_depth as depth3, orderBatch as orders3
+from exchange.indodax import (
+    get_trading_depth as depth3,
+    orderBatch as orders3,
+    get_balance as balance3,
+    get_price as price3,
+)  # "btc_idr"
 from exchange.mexc import get_trading_depth as depth4, orderBatch as orders4
 from exchange.flybit import get_trading_depth as depth5, orderBatch as orders5
 from exchange.getio import get_trading_depth as depth6, orderBatch as orders6
-from exchange.gopax import get_trading_depth as depth7, orderBatch as orders7 #"BTC-KRW"
+from exchange.gopax import (
+    get_trading_depth as depth7,
+    orderBatch as orders7,
+    get_balance as balance7,
+    get_price as price7,
+)  # "BTC-KRW"
 
 
 def get_trading_depth(pair, exchange):
@@ -41,3 +51,17 @@ def exchangeOrder(data, api_key, private_key, acton, exchange, priority, memo, s
         return orders6(data, api_key, private_key, acton, priority, self)
     if exchange == "7":
         return orders7(data, api_key, private_key, acton, priority, self)
+
+
+def balance(pair, api_key, private_key, exchange, self):
+    if exchange == "3":
+        return balance3(pair, api_key, private_key, self)
+    if exchange == "7":
+        return balance7(pair, api_key, private_key, self)
+
+
+def price(pair, exchange, self):
+    if exchange == "3":
+        return price3(pair, self)
+    if exchange == "7":
+        return price7(pair, self)

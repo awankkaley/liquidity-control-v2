@@ -6,7 +6,6 @@ def round_quantity(number, base):
 
 
 def random_float(min, max, decimals):
-    print('start random float ' + str(min) + ' ' + str(max))
     min_range = int(min * pow(10, decimals))
     max_range = int(max * pow(10, decimals))
     number = random.randrange(min_range, max_range, 1)
