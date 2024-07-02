@@ -1,4 +1,3 @@
-
 from tkinter import filedialog as tkFileDialog
 from tkinter import messagebox as tkMessageBox
 from tkinter import *
@@ -6,6 +5,7 @@ import tkinter.ttk as ttk
 from bulk import Bulk
 from credential import Setup
 from volume import Volume
+from createorder import Order
 
 LARGE_FONT = ("Verdana", 12)
 
@@ -20,13 +20,19 @@ class Home(Tk):
         self.title("LIQUIDITY CONTROL")
         self.fileMenu = Menu(self.menubar)
         self.fileMenu.add_command(
-            label="Configuration", command=lambda: self.show_frame(Setup, container))
+            label="Configuration", command=lambda: self.show_frame(Setup, container)
+        )
         self.menubar.add_cascade(label="Setup", menu=self.fileMenu)
         self.hisMenu = Menu(self.menubar)
         self.hisMenu.add_command(
-            label="Add Bulk Order", command=lambda: self.show_frame(Bulk, container))
+            label="Add Bulk Order", command=lambda: self.show_frame(Bulk, container)
+        )
         self.hisMenu.add_command(
-            label="Create Volume", command=lambda: self.show_frame(Volume, container))
+            label="Create Volume", command=lambda: self.show_frame(Volume, container)
+        )
+        self.hisMenu.add_command(
+            label="Create Order", command=lambda: self.show_frame(Order, container)
+        )
         self.menubar.add_cascade(label="Features", menu=self.hisMenu)
         self.exit = Menu(self.menubar)
         self.exit.add_command(label="FAQ", command=lambda: self.quit())
@@ -37,7 +43,7 @@ class Home(Tk):
 
         self.frames = {}
         self.recycle(container)
-        self.show_frame(Volume, container)
+        self.show_frame(Order, container)
 
     def show_frame(self, cont, container):
         self.recycle(container)
@@ -46,7 +52,7 @@ class Home(Tk):
         frame.tkraise()
 
     def recycle(self, container):
-        for F in (Bulk, Volume, Setup):
+        for F in (Bulk, Volume, Order, Setup):
             frame = F(container, self)
 
             self.frames[F] = frame

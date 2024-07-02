@@ -1,4 +1,5 @@
 from locale import currency
+import time
 from tkinter import *
 import tkinter.ttk as ttk
 import json
@@ -13,7 +14,7 @@ class Bulk(Frame):
         Frame.__init__(self, parent)
         currency = "USDT"
         try:
-            with open('credential.txt') as f:
+            with open("credential.txt") as f:
                 lines = f.readlines()
                 exchange = lines[0].replace("\n", "")
                 if exchange == "3":
@@ -25,14 +26,13 @@ class Bulk(Frame):
         master = Frame(self)
         master.pack(fill=BOTH, expand=True)
         self.par = master
-        self.judul = Label(master, text="ADD BULK ORDER",
-                           font="Helvetica 16 bold")
+        self.judul = Label(master, text="ADD BULK ORDER", font="Helvetica 16 bold")
         self.judul.grid(row=0, column=0, columnspan=2, ipady=15)
 
         self._separator = ttk.Separator(master, orient="horizontal")
         self._separator.grid(row=1, column=0, columnspan=2, sticky="we")
 
-        self.label1 = Label(master, text="Budget "+currency+":", pady=3)
+        self.label1 = Label(master, text="Budget " + currency + ":", pady=3)
         self.label1.grid(row=2, column=0, ipadx=20, sticky=E)
         self.amount = Entry(master)
         self.amount.grid(row=2, column=1, ipadx=20)
@@ -56,14 +56,19 @@ class Bulk(Frame):
         self.label7.grid(row=8, column=0, ipadx=20, sticky=E)
         self.order_type = IntVar()
         frame = Frame(master)
-        Radiobutton(frame, text="Sell", variable=self.order_type,
-                    value=1).pack(side=RIGHT)
-        Radiobutton(frame, text="Buy", variable=self.order_type,
-                    value=2).pack(side=RIGHT)
+        Radiobutton(frame, text="Sell", variable=self.order_type, value=1).pack(
+            side=RIGHT
+        )
+        Radiobutton(frame, text="Buy", variable=self.order_type, value=2).pack(
+            side=RIGHT
+        )
         frame.grid(row=8, column=1, sticky=W)
 
-        self.proses = Button(master, text="PROSES", command=lambda: threading.Thread(
-            target=self.processBulkOrder()).start())
+        self.proses = Button(
+            master,
+            text="PROSES",
+            command=lambda: threading.Thread(target=self.processBulkOrder()).start(),
+        )
         self.proses.grid(row=10, column=0, columnspan=2, pady=10)
 
         self._separator = ttk.Separator(master, orient="horizontal")
@@ -75,7 +80,7 @@ class Bulk(Frame):
         self._separator = ttk.Separator(master, orient="horizontal")
         self._separator.grid(row=13, column=0, columnspan=2, sticky="we")
 
-        self.res1 = Label(self.par, text=currency+" Per Order : ", pady=3)
+        self.res1 = Label(self.par, text=currency + " Per Order : ", pady=3)
         self.res1.grid(row=14, column=0, ipadx=20, sticky=E)
         self.res2 = Label(self.par, text="")
         self.res2.grid(row=14, column=1, ipadx=20, sticky=W)
@@ -101,17 +106,18 @@ class Bulk(Frame):
     def processBulkOrder(self):
         valid = self.validation()
         if valid:
-            self.result['text'] = "Processing"
+            self.result["text"] = "Processing"
             amount = self.amount.get()
             order_start_price = self.order_start_price.get()
             trailing_percentage = self.trailing_percentage.get()
             order_quantity = self.order_quantity.get()
             order_type = self.order_type.get()
             usdt_per_order = float(amount) / int(order_quantity)
-            self.res2['text'] = str(usdt_per_order)
-            distance_percentage_per_order = float(
-                trailing_percentage) / int(order_quantity)
-            self.res4['text'] = str(distance_percentage_per_order)
+            self.res2["text"] = str(usdt_per_order)
+            distance_percentage_per_order = float(trailing_percentage) / int(
+                order_quantity
+            )
+            self.res4["text"] = str(distance_percentage_per_order)
             direction_amplifier = -1 if (int(order_type) == 2) else 1
             if order_type == 2:
                 order_type = "buy"
@@ -119,37 +125,119 @@ class Bulk(Frame):
                 order_type = "sell"
             list = []
 
-            self.f = open('log.txt', 'w')
+            self.f = open("log.txt", "w")
             self.f.write("------DATA------")
             for index in range(int(order_quantity)):
                 current_percentage = float(
-                    index * distance_percentage_per_order * direction_amplifier)
-                price = float(order_start_price) + \
-                    float(order_start_price) * current_percentage / 100
+                    index * distance_percentage_per_order * direction_amplifier
+                )
+                price = (
+                    float(order_start_price)
+                    + float(order_start_price) * current_percentage / 100
+                )
                 price = round(price, int(self.price_decimals))
                 token_per_order = round(
-                    float(usdt_per_order / price), int(self.quantity_decimals))
-                orderdata = ({"symbol": self.market, "type": order_type,
-                              "price": price, "amount": token_per_order, "custom_id": ''})
+                    float(usdt_per_order / price), int(self.quantity_decimals)
+                )
+                orderdata = {
+                    "symbol": self.market,
+                    "type": order_type,
+                    "price": price,
+                    "amount": token_per_order,
+                    "custom_id": "",
+                }
                 self.f.write("\n")
                 list.append(orderdata)
 
-            data = json.dumps(list)
-            self.order['text'] = str(len(list))
+            self.order["text"] = str(len(list))
             if self.exchange != "2":
                 self.memo = ""
-            exchangeOrder(data=data, api_key=self.api_key, private_key=self.private_key,
-                          acton="add_bulk_order", exchange=self.exchange, priority=2, memo=self.memo, self=self)
+            count = 0
+            no = 0
+            for item in list:
+                no += 1
+                if no % 10 == 0:
+                    time.sleep(1.2)
+                try:
+                    res = exchangeOrder(
+                        item["symbol"],
+                        item["type"],
+                        item["price"],
+                        item["amount"],
+                        self.api_key,
+                        self.private_key,
+                        self.exchange,
+                    )
+                    if res["success"] == True:
+                        count += 1
+                        self.f.write(
+                            "Order "
+                            + item["type"]
+                            + ": Succes"
+                            + " ID: "
+                            + str(res["order_id"])
+                            + " Price: "
+                            + str(item["price"])
+                            + " Amount: "
+                            + str(item["amount"])
+                            + " Time: "
+                            + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                        )
+                        self.f.write("\n")
+                        print(
+                            "Order "
+                            + item["type"]
+                            + ": Succes"
+                            + " ID: "
+                            + str(res["order_id"])
+                            + " Price: "
+                            + str(item["price"])
+                            + " Amount: "
+                            + str(item["amount"])
+                            + " Time: "
+                            + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                        )
+
+                    else:
+                        self.f.write(
+                            "Order "
+                            + item["type"]
+                            + ": Failed-"
+                            + "-"
+                            + str(res["errorMessage"])
+                        )
+                        self.f.write("\n")
+                        print(
+                            "Order  "
+                            + item["type"]
+                            + ": Failed-"
+                            + "-"
+                            + str(res["errorMessage"])
+                        )
+                except Exception as e:
+                    print(str(e))
+                    self.f.write("Order  " + item["type"] + ": Failed-Request Failed")
+                    self.f.write("\n")
+                    print("Order  " + item["type"] + ": Failed- Request Failed")
+            self.success["text"] = str(count)
+            self.result["text"] = "Process Completed, please check log"
+            self.f.close()
 
     def validation(self):
-        self.result['text'] = "-"
+        self.result["text"] = "-"
         amount = self.amount.get()
         order_start_price = self.order_start_price.get()
         trailing_percentage = self.trailing_percentage.get()
         order_quantity = self.order_quantity.get()
         order_type = self.order_type.get()
-        if amount == "" or order_start_price == "" or trailing_percentage == "" or order_quantity == "" or order_type == 0:
-            self.result['text'] = "Field cannot be empty"
+        if (
+            amount == ""
+            or order_start_price == ""
+            or trailing_percentage == ""
+            or order_quantity == ""
+            or order_type == 0
+        ):
+            self.result["text"] = "Field cannot be empty"
             return False
         else:
             try:
@@ -159,7 +247,7 @@ class Bulk(Frame):
                 order_quantity = int(self.order_quantity.get())
                 order_type = int(self.order_type.get())
                 try:
-                    with open('credential.txt') as f:
+                    with open("credential.txt") as f:
                         lines = f.readlines()
                         self.exchange = lines[0].replace("\n", "")
                         self.api_key = lines[1].replace("\n", "")
@@ -171,10 +259,10 @@ class Bulk(Frame):
                             self.memo = lines[6].replace("\n", "")
                         return True
                 except:
-                    self.result['text'] = "Please set your configuration first"
+                    self.result["text"] = "Please set your configuration first"
                     return False
             except:
-                self.result['text'] = "Field value not valid"
+                self.result["text"] = "Field value not valid"
                 return False
 
     def open_win(self):

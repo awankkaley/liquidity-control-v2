@@ -51,242 +51,20 @@ def order(pair, side, price, size, api_key, secret_key):
         "tradingPairName": pair,
     }
     response = call(api_key, secret_key, True, "POST", "/orders", post_orders_req_body)
-    return response
-
-
-def orderBatch(data, api_key, private_key, acton, priority, self):
-    count = 0
-    no = 0
-    if acton == "add_bulk_order":
-        for item in json.loads(data):
-            no += 1
-            if no % 10 == 0:
-                time.sleep(1.2)
-            try:
-                res = order(
-                    item["symbol"],
-                    item["type"],
-                    item["price"],
-                    item["amount"],
-                    api_key,
-                    private_key,
-                )
-                if "id" in res["body"]:
-                    count += 1
-                    self.f.write("\n")
-                    self.f.write(
-                        "Order "
-                        + str(no)
-                        + ": Success, ID: "
-                        + str(res["body"]["id"])
-                        + " Price: "
-                        + str(item["price"])
-                        + " Amount: "
-                        + str(item["amount"])
-                        + " Type: "
-                        + str(item["type"])
-                        + " Time: "
-                        + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                    )
-                    print(
-                        "Order "
-                        + str(no)
-                        + ": Success, ID: "
-                        + str(res["body"]["id"])
-                        + " Price: "
-                        + str(item["price"])
-                        + " Amount: "
-                        + str(item["amount"])
-                        + " Type: "
-                        + str(item["type"])
-                        + " Time: "
-                        + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                    )
-                else:
-                    self.f.write("\n")
-                    self.f.write("Order " + str(no) + ": Failed -" + str(res))
-                    print("Order " + str(no) + ": Failed -" + str(res))
-            except e:
-                print(str(e))
-                self.f.write("\n")
-                self.f.write("Order " + str(no) + ": Request Failed")
-                print("Order " + str(no) + ": Request Failed")
-        self.success["text"] = str(count)
-        self.result["text"] = "Process Completed, please check log"
-        self.f.close()
-    if acton == "create_volume":
-        for item in json.loads(data):
-            status = "Failed"
-            no += 1
-            try:
-                res = order(
-                    item["symbol"],
-                    item["type"],
-                    item["price"],
-                    item["amount"],
-                    api_key,
-                    private_key,
-                )
-                if "id" in res["body"]:
-                    status = "Success"
-                    if priority == 2:
-                        if no == 1:
-                            self.ob["text"] = str(status)
-                            self.f.write(
-                                "Order Buy: "
-                                + status
-                                + "ID: "
-                                + str(res["body"]["id"])
-                                + " Price: "
-                                + str(item["price"])
-                                + " Amount: "
-                                + str(item["amount"])
-                                + " Time: "
-                                + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                            )
-                            self.f.write("\n")
-                            print(
-                                "Order Buy: "
-                                + status
-                                + " ID: "
-                                + str(res["body"]["id"])
-                                + " Price: "
-                                + str(item["price"])
-                                + " Amount: "
-                                + str(item["amount"])
-                                + " Time: "
-                                + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                            )
-                        else:
-                            self.os["text"] = str(status)
-                            self.f.write(
-                                "Order Sell: "
-                                + status
-                                + " ID: "
-                                + str(res["body"]["id"])
-                                + " Price: "
-                                + str(item["price"])
-                                + " Amount: "
-                                + str(item["amount"])
-                                + " Time: "
-                                + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                            )
-                            self.f.write("\n")
-                            print(
-                                "Order Sell: "
-                                + status
-                                + " ID: "
-                                + str(res["body"]["id"])
-                                + " Price: "
-                                + str(item["price"])
-                                + " Amount: "
-                                + str(item["amount"])
-                                + " Time: "
-                                + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                            )
-                    else:
-                        if no == 1:
-                            self.os["text"] = str(status)
-                            self.f.write(
-                                "Order Sell: "
-                                + status
-                                + " ID: "
-                                + str(res["body"]["id"])
-                                + " Price: "
-                                + str(item["price"])
-                                + " Amount: "
-                                + str(item["amount"])
-                                + " Time: "
-                                + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                            )
-                            self.f.write("\n")
-                            print(
-                                "Order Sell: "
-                                + status
-                                + " ID: "
-                                + str(res["body"]["id"])
-                                + " Price: "
-                                + str(item["price"])
-                                + " Amount: "
-                                + str(item["amount"])
-                                + " Time: "
-                                + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                            )
-                        else:
-                            self.ob["text"] = str(status)
-                            self.f.write(
-                                "Order Buy: "
-                                + status
-                                + " ID: "
-                                + str(res["body"]["id"])
-                                + " Price: "
-                                + str(item["price"])
-                                + " Amount: "
-                                + str(item["amount"])
-                                + " Time: "
-                                + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                            )
-                            self.f.write("\n")
-                            print(
-                                "Order Buy: "
-                                + status
-                                + " ID: "
-                                + str(res["body"]["id"])
-                                + " Price: "
-                                + str(item["price"])
-                                + " Amount: "
-                                + str(item["amount"])
-                                + " Time: "
-                                + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                            )
-                else:
-                    if priority == 2:
-                        if no == 1:
-                            self.ob["text"] = str(status + "-" + str(res))
-                            self.f.write("Order Buy: " + status + "-" + str(res))
-                            self.f.write("\n")
-                            print("Order Buy: " + status + "-" + str(res))
-                        else:
-                            self.os["text"] = str(status + "-" + str(res))
-                            self.f.write("Order Sell: " + status + "-" + str(res))
-                            self.f.write("\n")
-                            print("Order Sell: " + status + "-" + str(res))
-                    else:
-                        if no == 1:
-                            self.os["text"] = str(status + "-" + str(res))
-                            self.f.write("Order Sell: " + status + "-" + str(res))
-                            self.f.write("\n")
-                            print("Order Sell: " + status + "-" + str(res))
-                        else:
-                            self.ob["text"] = str(status + "-" + str(res))
-                            self.f.write("Order Buy: " + status + "-" + str(res))
-                            self.f.write("\n")
-                            print("Order Buy: " + status + "-" + str(res))
-            except Exception as e:
-                print("------ERRROOOORRRR------- : " + str(e))
-                if priority == 2:
-                    if no == 1:
-                        self.ob["text"] = str(status + "- Request Failed")
-                        self.f.write("Order Buy: " + status + "-Request Failed")
-                        self.f.write("\n")
-                        print("Order Buy: " + status + "- Request Failed")
-                    else:
-                        self.os["text"] = str(status + "- Request Failed")
-                        self.f.write("Order Sell: " + status + "- Request Failed")
-                        self.f.write("\n")
-                        print("Order Sell: " + status + "- Request Failed")
-                else:
-                    if no == 1:
-                        self.os["text"] = str(status + "-Request Failed")
-                        self.f.write("Order Sell: " + status + "-Request Failed")
-                        self.f.write("\n")
-                        print("Order Sell: " + status + "-Request Failed")
-                    else:
-                        self.ob["text"] = str(status + "-Request Failed")
-                        self.f.write("Order Buy: " + status + "-Request Failed")
-                        self.f.write("\n")
-                        print("Order Buy: " + status + "-Request Failed")
-
+    if response["statusCode"] == 200:
+        return {
+            "success": True,
+            "order_id": response["body"]["id"],
+            "type": response["body"]["side"],
+            "price": response["body"]["price"],
+            "amount": response["body"]["amount"],
+            "created_at": datetime.now(),
+        }
+    else:
+        return {
+            "success": False,
+            "errorMessage": response["body"]["errorMessage"],
+        }
 
 def get_trading_depth(pair):
     response = call("", "", False, "GET", "/trading-pairs/" + pair + "/book")
@@ -314,32 +92,10 @@ def balance(pair, api_key, secret_key):
 
     return [tokenA, tokenB]
 
-
-def get_balance(pair, api_key, secret_key, self):
-    try:
-        res = balance(pair, api_key, secret_key)
-        self.tokenA["text"] = res[0]
-        self.tokenB["text"] = res[1]
-    except Exception as e:
-        print(str(e))
-        self.tokenA["text"] = "Failed"
-        self.tokenB["text"] = "Failed"
-
-
 def price(pair):
     response = call("", "", False, "GET", "/trading-pairs/" + pair + "/ticker")
     last_price = float(response["body"]["price"])
     return last_price
-
-
-def get_price(pair, self):
-    try:
-        res = price(pair)
-        self.current_price["text"] = res
-    except Exception as e:
-        # print(str(e))
-        self.current_price["text"] = "Failed"
-
 
 def cancel(id, api_key, secret_key):
     response = call(api_key, secret_key, True, "DELETE", "/orders/" + id)
@@ -357,3 +113,15 @@ def cancel_all(api_key, secret_key):
         cancel(order["id"], api_key, secret_key)
 
 
+# print(
+#     cancel_all(
+#         "1-182ac4e6-fe01-4a64-a77c-c315fcce5-des8c494ea8351681ac061990565",
+#         "3CHcr+xpC9cdsWi5K+CLDWwhlHjpe02GXR+OjQ6IuSA83z68IEKbAGYjXB0i9Kb1Nvccgy+AbiXti05E5Tu/+A==",
+#     )
+# )
+# print(
+#     orders(
+#         "1-182ac4e6-fe01-4a64-a77c-c315fcce5-des8c494ea8351681ac061990565",
+#         "3CHcr+xpC9cdsWi5K+CLDWwhlHjpe02GXR+OjQ6IuSA83z68IEKbAGYjXB0i9Kb1Nvccgy+AbiXti05E5Tu/+A==",
+#     )
+# )

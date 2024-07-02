@@ -187,11 +187,17 @@ class Volume(Frame):
         self.proses = Button(master, text="Show Log", command=self.open_win)
         self.proses.grid(row=28, column=0, columnspan=2, pady=10)
         try:
-            balance(pair, api_key, private_key, exchange, self)
-            price(pair, exchange, self)
-
-        except:
-            pass
+            res = balance(pair, api_key, private_key, exchange)
+            self.tokenA["text"] = res[0]
+            self.tokenB["text"] = res[1]
+        except Exception as e:
+            self.tokenA["text"] = "Failed"
+            self.tokenB["text"] = "Failed"
+        try:
+            res = price(pair, exchange)
+            self.current_price["text"] = res
+        except Exception as e:
+            self.current_price["text"] = "Failed"
 
     def stop(self):
         self.active = False
@@ -422,22 +428,99 @@ class Volume(Frame):
                             "custom_id": "",
                         }
                     )
-            data = json.dumps(list)
-            exchangeOrder(
-                data=data,
-                api_key=api_key,
-                private_key=private_key,
-                acton="create_volume",
-                exchange=exchange,
-                priority=priority,
-                memo=self.memo,
-                self=self,
-            )
-            balance(self.market, api_key, private_key, exchange, self)
-            price(self.market, exchange, self)
-            self.count += 1
-        self.f.write("\n")
-        self.f.close()
+            for item in list:
+                if self.active == False:
+                    break
+                try:
+                    res = exchangeOrder(
+                        item["symbol"],
+                        item["type"],
+                        item["price"],
+                        item["amount"],
+                        api_key,
+                        private_key,
+                        exchange,
+                    )
+                    if res["success"] == True:
+                        if res["type"] == "buy":
+                            self.ob["text"] = "Succes"
+                        else:
+                            self.os["text"] = "Succes"
+                        self.f.write(
+                            "Order "
+                            + item["type"]
+                            + ": Succes"
+                            + " ID: "
+                            + str(res["order_id"])
+                            + " Price: "
+                            + str(item["price"])
+                            + " Amount: "
+                            + str(item["amount"])
+                            + " Time: "
+                            + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                        )
+                        self.f.write("\n")
+                        print(
+                            "Order "
+                            + item["type"]
+                            + ": Succes"
+                            + " ID: "
+                            + str(res["order_id"])
+                            + " Price: "
+                            + str(item["price"])
+                            + " Amount: "
+                            + str(item["amount"])
+                            + " Time: "
+                            + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                        )
+    
+                    else:
+                        if res["type"] == "buy":
+                            self.ob["text"] = str("Failed-" + str(res["errorMessage"]))
+                        else:
+                            self.os["text"] = str("Failed-" + str(res["errorMessage"]))
+                        self.f.write(
+                            "Order "
+                            + item["type"]
+                            + ": Failed-"
+                            + "-"
+                            + str(res["errorMessage"])
+                        )
+                        self.f.write("\n")
+                        print(
+                            "Order  "
+                            + item["type"]
+                            + ": Failed-"
+                            + "-"
+                            + str(res["errorMessage"])
+                        )
+                except Exception as e:
+                    print(str(e))
+                    if item["type"] == "buy":
+                        self.ob["text"] = str("Failed- Request Failed")
+                    else:
+                        self.os["text"] = str("Failed- Request Failed")
+                    self.f.write("Order  " + item["type"] + ": Failed-Request Failed")
+                    self.f.write("\n")
+                    print("Order  " + item["type"] + ": Failed- Request Failed")
+    
+                try:
+                    res = balance(market, api_key, private_key, exchange)
+                    self.tokenA["text"] = res[0]
+                    self.tokenB["text"] = res[1]
+                except Exception as e:
+                    self.tokenA["text"] = "Failed"
+                    self.tokenB["text"] = "Failed"
+                try:
+                    res = price(market, exchange)
+                    self.current_price["text"] = res
+                except Exception as e:
+                    self.current_price["text"] = "Failed"
+    
+                    self.current_price["text"] = "Failed"
+                self.count += 1
+            self.f.write("\n")
+            self.f.close()
 
     def open_win(self):
         new = Toplevel(self)
