@@ -112,17 +112,3 @@ def cancel_all(api_key, secret_key):
     orders_data = orders(api_key, secret_key)
     for order in orders_data:
         cancel("", order["id"], "", api_key, secret_key)
-
-
-# print(
-#     cancel_all(
-#         "1-182ac4e6-fe01-4a64-a77c-c315fcce5-des8c494ea8351681ac061990565",
-#         "3CHcr+xpC9cdsWi5K+CLDWwhlHjpe02GXR+OjQ6IuSA83z68IEKbAGYjXB0i9Kb1Nvccgy+AbiXti05E5Tu/+A==",
-#     )
-# )
-# print(
-#     orders(
-#         "1-182ac4e6-fe01-4a64-a77c-c315fcce5-des8c494ea8351681ac061990565",
-#         "3CHcr+xpC9cdsWi5K+CLDWwhlHjpe02GXR+OjQ6IuSA83z68IEKbAGYjXB0i9Kb1Nvccgy+AbiXti05E5Tu/+A==",
-#     )
-# )
