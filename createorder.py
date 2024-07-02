@@ -66,12 +66,12 @@ class Order(Frame):
         self.expire_time = Entry(master)
         self.expire_time.grid(row=4, column=1, ipadx=20)
 
-        self.label6 = Label(master, text="Buy limit percentage (%): : ", pady=3)
+        self.label6 = Label(master, text="Buy trailing percentage (%): : ", pady=3)
         self.label6.grid(row=7, column=0, ipadx=20, sticky=E)
         self.buy_limit_percentage = Entry(master)
         self.buy_limit_percentage.grid(row=7, column=1, ipadx=20)
 
-        self.label7 = Label(master, text="Sell limit percentage (%): : ", pady=3)
+        self.label7 = Label(master, text="Sell trailing percentage (%): : ", pady=3)
         self.label7.grid(row=8, column=0, ipadx=20, sticky=E)
         self.sell_limit_percentage = Entry(master)
         self.sell_limit_percentage.grid(row=8, column=1, ipadx=20)
@@ -309,18 +309,18 @@ class Order(Frame):
         count = int(self.ttl["text"]) + 1
         self.ttl["text"] = str(count)
         list = []
+        current_price = price(market, exchange)
+        range_buy =  current_price * buy_limit_percentage / 100
+        range_sell =  current_price * sell_limit_percentage / 100
         for i in range(int(count_order)):
             random_quantity = random_float(min_usdt, max_usdt, quantity_decimals)
             self.qty["text"] = str(random_quantity) + " " + self.currency
-            current_price = price(market, exchange)
-            random_buy_percentage = random.uniform(0, buy_limit_percentage)
-            random_sell_percentage = random.uniform(0, sell_limit_percentage)
             buy_price = round(
-                current_price - current_price * random_buy_percentage / 100,
+                current_price - range_buy*(i+1),
                 price_decimals,
             )
             sell_price = round(
-                current_price + current_price * random_sell_percentage / 100,
+                current_price + range_sell*(i+1),
                 price_decimals,
             )
             token_per_order_buy = round(
@@ -518,4 +518,5 @@ class Order(Frame):
         t.place
         t.insert(END, str(f.read()))
         t.pack(fill=BOTH, expand=1)
+
 
