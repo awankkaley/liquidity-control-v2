@@ -1,4 +1,5 @@
 from asyncio import sleep
+import random
 from tkinter import filedialog as tkFileDialog
 from tkinter import messagebox as tkMessageBox
 from tkinter import *
@@ -74,6 +75,11 @@ class Order(Frame):
         self.label7.grid(row=8, column=0, ipadx=20, sticky=E)
         self.sell_limit_percentage = Entry(master)
         self.sell_limit_percentage.grid(row=8, column=1, ipadx=20)
+
+        self.label8 = Label(master, text="Order count: ", pady=3)
+        self.label8.grid(row=9, column=0, ipadx=20, sticky=E)
+        self.count_order = Entry(master)
+        self.count_order.grid(row=9, column=1, ipadx=20)
 
         self.proses = Button(
             master,
@@ -185,6 +191,7 @@ class Order(Frame):
         expire_time = self.expire_time.get()
         buy_limit_percentage = self.buy_limit_percentage.get()
         sell_limit_percentage = self.sell_limit_percentage.get()
+        count_order = self.count_order.get()
         if self.validation() == True:
             self.result["text"] = "Running....."
             self.count = 1
@@ -195,13 +202,14 @@ class Order(Frame):
                 int(expire_time),
                 int(buy_limit_percentage),
                 int(sell_limit_percentage),
+                int(count_order),
                 self.market,
                 int(self.quantity_decimals),
                 int(self.price_decimals),
                 str(self.api_key),
                 str(self.private_key),
-                str(getattr(self, 'api_key_b', '')),
-                str(getattr(self, 'private_key_b', '')),
+                str(getattr(self, "api_key_b", "")),
+                str(getattr(self, "private_key_b", "")),
                 str(self.exchange),
             )
 
@@ -212,12 +220,14 @@ class Order(Frame):
         expire_time = self.expire_time.get()
         buy_limit_percentage = self.buy_limit_percentage.get()
         sell_limit_percentage = self.sell_limit_percentage.get()
+        count_order = self.count_order.get()
         if (
             min_usdt == ""
             or max_usdt == ""
             or expire_time == ""
             or buy_limit_percentage == ""
             or sell_limit_percentage == ""
+            or count_order == ""
         ):
             self.result["text"] = "Field cannot be empty"
             return False
@@ -228,6 +238,7 @@ class Order(Frame):
                 expire_time = int(self.expire_time.get())
                 buy_limit_percentage = int(self.buy_limit_percentage.get())
                 sell_limit_percentage = int(self.sell_limit_percentage.get())
+                count_order = int(self.count_order.get())
                 try:
                     with open("credential.txt") as f:
                         lines = f.readlines()
@@ -258,6 +269,7 @@ class Order(Frame):
         expire_time,
         buy_limit_percentage,
         sell_limit_percentage,
+        count_order,
         market,
         quantity_decimals,
         price_decimals,
@@ -278,6 +290,7 @@ class Order(Frame):
                 expire_time,
                 buy_limit_percentage,
                 sell_limit_percentage,
+                count_order,
                 market,
                 quantity_decimals,
                 price_decimals,
@@ -295,47 +308,52 @@ class Order(Frame):
         self.f = open("log-v.txt", "a")
         count = int(self.ttl["text"]) + 1
         self.ttl["text"] = str(count)
-
-        random_quantity = random_float(min_usdt, max_usdt, quantity_decimals)
-        self.qty["text"] = str(random_quantity) + " " + self.currency
-        current_price = price(market, exchange)
-        buy_price = round(
-            current_price - current_price * buy_limit_percentage / 100, price_decimals
-        )
-        sell_price = round(
-            current_price + current_price * sell_limit_percentage / 100, price_decimals
-        )
-        token_per_order_buy = round(
-            float(random_quantity / buy_price), int(quantity_decimals)
-        )
-
-        token_per_order_sell = round(
-            float(random_quantity / sell_price), int(quantity_decimals)
-        )
-
-        self.qty_token_buy["text"] = str(token_per_order_buy)
-        self.qty_token_sell["text"] = str(token_per_order_sell)
-        self.prb["text"] = str(buy_price) + " " + self.currency
-        self.prs["text"] = str(sell_price) + " " + self.currency
         list = []
-        list.append(
-            {
-                "symbol": market,
-                "type": "buy",
-                "price": buy_price,
-                "amount": token_per_order_buy,
-                "custom_id": "",
-            }
-        )
-        list.append(
-            {
-                "symbol": market,
-                "type": "sell",
-                "price": sell_price,
-                "amount": token_per_order_sell,
-                "custom_id": "",
-            }
-        )
+        for i in range(int(count_order)):
+            random_quantity = random_float(min_usdt, max_usdt, quantity_decimals)
+            self.qty["text"] = str(random_quantity) + " " + self.currency
+            current_price = price(market, exchange)
+            random_buy_percentage = random.uniform(0, buy_limit_percentage)
+            random_sell_percentage = random.uniform(0, sell_limit_percentage)
+            buy_price = round(
+                current_price - current_price * random_buy_percentage / 100,
+                price_decimals,
+            )
+            sell_price = round(
+                current_price + current_price * random_sell_percentage / 100,
+                price_decimals,
+            )
+            token_per_order_buy = round(
+                float(random_quantity / buy_price), int(quantity_decimals)
+            )
+
+            token_per_order_sell = round(
+                float(random_quantity / sell_price), int(quantity_decimals)
+            )
+
+            self.qty_token_buy["text"] = str(token_per_order_buy)
+            self.qty_token_sell["text"] = str(token_per_order_sell)
+            self.prb["text"] = str(buy_price) + " " + self.currency
+            self.prs["text"] = str(sell_price) + " " + self.currency
+  
+            list.append(
+                {
+                    "symbol": market,
+                    "type": "buy",
+                    "price": buy_price,
+                    "amount": token_per_order_buy,
+                    "custom_id": "",
+                }
+            )
+            list.append(
+                {
+                    "symbol": market,
+                    "type": "sell",
+                    "price": sell_price,
+                    "amount": token_per_order_sell,
+                    "custom_id": "",
+                }
+            )
         exist_data = database.getAll()
         if len(exist_data) > 0:
             for data in exist_data:
@@ -500,3 +518,4 @@ class Order(Frame):
         t.place
         t.insert(END, str(f.read()))
         t.pack(fill=BOTH, expand=1)
+
