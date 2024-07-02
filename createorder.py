@@ -5,9 +5,10 @@ from tkinter import *
 import tkinter.ttk as ttk
 import threading
 import json
-from exchange.exchange import get_trading_depth, exchangeOrder, balance, price
+from exchange.exchange import get_trading_depth, exchangeOrder, balance, price, cancel
 from exchange.math_utils import random_float
 from datetime import datetime
+from pysondb import db
 
 
 class Order(Frame):
@@ -166,6 +167,7 @@ class Order(Frame):
         self.result["text"] = "Stoped"
 
     def start_process(self):
+        database = db.getDb("db.json")
         self.active = True
         min_usdt = self.min_usdt.get()
         max_usdt = self.max_usdt.get()
@@ -176,6 +178,7 @@ class Order(Frame):
             self.result["text"] = "Running....."
             self.count = 1
             self.start(
+                database,
                 float(min_usdt),
                 float(max_usdt),
                 int(expire_time),
@@ -233,6 +236,7 @@ class Order(Frame):
 
     def start(
         self,
+        database,
         min_usdt,
         max_usdt,
         expire_time,
@@ -250,6 +254,7 @@ class Order(Frame):
             delay,
             self.start,
             (
+                database,
                 min_usdt,
                 max_usdt,
                 expire_time,
@@ -311,9 +316,13 @@ class Order(Frame):
                 "custom_id": "",
             }
         )
+        exist_data = database.getAll()
+        if len(exist_data) > 0:
+            for data in exist_data:
+                cancel(market, data["order_id"], data["type"], api_key, private_key, exchange)
+                database.deleteById(data["id"])
+
         for item in list:
-            if self.active == False:
-                break
             try:
                 res = exchangeOrder(
                     item["symbol"],
@@ -325,6 +334,7 @@ class Order(Frame):
                     exchange,
                 )
                 if res["success"] == True:
+                    database.add(res)
                     if res["type"] == "buy":
                         self.ob["text"] = "Succes"
                     else:
@@ -340,7 +350,9 @@ class Order(Frame):
                         + " Amount: "
                         + str(item["amount"])
                         + " Time: "
-                        + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                        + datetime.fromtimestamp(res["created_at"]).strftime(
+                            "%d/%m/%Y %H:%M:%S"
+                        )
                     )
                     self.f.write("\n")
                     print(
@@ -354,11 +366,13 @@ class Order(Frame):
                         + " Amount: "
                         + str(item["amount"])
                         + " Time: "
-                        + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                        + datetime.fromtimestamp(res["created_at"]).strftime(
+                            "%d/%m/%Y %H:%M:%S"
+                        )
                     )
 
                 else:
-                    if res["type"] == "buy":
+                    if item["type"] == "buy":
                         self.ob["text"] = str("Failed-" + str(res["errorMessage"]))
                     else:
                         self.os["text"] = str("Failed-" + str(res["errorMessage"]))

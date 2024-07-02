@@ -1,3 +1,4 @@
+from datetime import datetime
 from locale import currency
 import time
 from tkinter import *
@@ -181,7 +182,7 @@ class Bulk(Frame):
                             + " Amount: "
                             + str(item["amount"])
                             + " Time: "
-                            + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                            + datetime.fromtimestamp(res["created_at"]).strftime("%d/%m/%Y %H:%M:%S")
                         )
                         self.f.write("\n")
                         print(
@@ -195,7 +196,7 @@ class Bulk(Frame):
                             + " Amount: "
                             + str(item["amount"])
                             + " Time: "
-                            + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                            + datetime.fromtimestamp(res["created_at"]).strftime("%d/%m/%Y %H:%M:%S")
                         )
 
                     else:

@@ -6,6 +6,7 @@ from exchange.indodax import (
     order as orders3,
     balance as balance3,
     price as price3,
+    cancel as cancel3,
 )  # "btc_idr"
 from exchange.mexc import get_trading_depth as depth4, orderBatch as orders4
 from exchange.flybit import get_trading_depth as depth5, orderBatch as orders5
@@ -15,6 +16,7 @@ from exchange.gopax import (
     order as orders7,
     balance as balance7,
     price as price7,
+    cancel as cancel7,
 )  # "BTC-KRW"
 
 
@@ -45,3 +47,10 @@ def price(pair, exchange):
         return price3(pair)
     if exchange == "7":
         return price7(pair)
+
+
+def cancel(pair, order_id, type, api_key, private_key, exchange):
+    if exchange == "3":
+        return cancel3(pair, order_id, type, api_key, private_key)
+    if exchange == "7":
+        return cancel7(pair, order_id, type, api_key, private_key)

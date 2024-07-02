@@ -2,3 +2,4 @@ pyinstaller
 requests
 pycryptodome
 pyjwt
+pysondb

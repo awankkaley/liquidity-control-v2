@@ -1,4 +1,5 @@
 from asyncio import sleep
+from datetime import datetime
 from tkinter import filedialog as tkFileDialog
 from tkinter import messagebox as tkMessageBox
 from tkinter import *
@@ -429,8 +430,6 @@ class Volume(Frame):
                         }
                     )
             for item in list:
-                if self.active == False:
-                    break
                 try:
                     res = exchangeOrder(
                         item["symbol"],
@@ -457,7 +456,7 @@ class Volume(Frame):
                             + " Amount: "
                             + str(item["amount"])
                             + " Time: "
-                            + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                            + datetime.fromtimestamp(res["created_at"]).strftime("%d/%m/%Y %H:%M:%S")
                         )
                         self.f.write("\n")
                         print(
@@ -471,11 +470,11 @@ class Volume(Frame):
                             + " Amount: "
                             + str(item["amount"])
                             + " Time: "
-                            + res["created_at"].strftime("%d/%m/%Y %H:%M:%S")
+                            + datetime.fromtimestamp(res["created_at"]).strftime("%d/%m/%Y %H:%M:%S")
                         )
     
                     else:
-                        if res["type"] == "buy":
+                        if item["type"] == "buy":
                             self.ob["text"] = str("Failed-" + str(res["errorMessage"]))
                         else:
                             self.os["text"] = str("Failed-" + str(res["errorMessage"]))
@@ -504,21 +503,20 @@ class Volume(Frame):
                     self.f.write("\n")
                     print("Order  " + item["type"] + ": Failed- Request Failed")
     
-                try:
-                    res = balance(market, api_key, private_key, exchange)
-                    self.tokenA["text"] = res[0]
-                    self.tokenB["text"] = res[1]
-                except Exception as e:
-                    self.tokenA["text"] = "Failed"
-                    self.tokenB["text"] = "Failed"
-                try:
-                    res = price(market, exchange)
-                    self.current_price["text"] = res
-                except Exception as e:
-                    self.current_price["text"] = "Failed"
-    
-                    self.current_price["text"] = "Failed"
-                self.count += 1
+            try:
+                res = balance(market, api_key, private_key, exchange)
+                self.tokenA["text"] = res[0]
+                self.tokenB["text"] = res[1]
+            except Exception as e:
+                self.tokenA["text"] = "Failed"
+                self.tokenB["text"] = "Failed"
+            try:
+                res = price(market, exchange)
+                self.current_price["text"] = res
+            except Exception as e:
+                self.current_price["text"] = "Failed"
+                self.current_price["text"] = "Failed"
+            self.count += 1
             self.f.write("\n")
             self.f.close()
 

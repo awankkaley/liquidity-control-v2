@@ -1,13 +1,10 @@
 from collections import OrderedDict
 import hashlib
 import hmac
-import json
 import time
 from urllib import response
 from datetime import datetime
 import requests
-
-
 BASE_URL = "https://indodax.com"
 
 
@@ -76,7 +73,7 @@ def order(pair, side, price, size, api_key, secret_key):
             "type": type,
             "price": price,
             "amount": size,
-            "created_at": datetime.now(),
+            "created_at": time.time(),
         }
     else:
         return {
@@ -106,6 +103,7 @@ def get_orders(pair, api_key, secret_key):
 
 
 def cancel(pair, order_id, type, api_key, secret_key):
+    print("cancel")
     timestamp = get_time_stamp()
     method = "cancelOrder"
 
@@ -156,39 +154,3 @@ def cancel_all(pair, api_key, secret_key):
     orders = get_orders(pair, api_key, secret_key)
     for order in orders["return"]["orders"]:
         cancel(pair, order["order_id"], order["type"], api_key, secret_key)
-
-
-# print(
-#     cancel_all(
-#         "algo_idr",
-#         "GQGVC7DI-V7FCWG6O-IRFKWIEY-HUXT6SQQ-P1482IJZ",
-#         "9521c1dbf6cb4b91597e669ca7d7bbf7a433eda4cece45bb3d015b6d1ce62376936b08ef751edb0a",
-#     )
-# )
-
-# print(
-#     get_orders(
-#         "algo_idr",
-#         "GQGVC7DI-V7FCWG6O-IRFKWIEY-HUXT6SQQ-P1482IJZ",
-#         "9521c1dbf6cb4b91597e669ca7d7bbf7a433eda4cece45bb3d015b6d1ce62376936b08ef751edb0a",
-#     )
-# )
-
-# print(
-#     cancel(
-#         "algo_idr",
-#         "28511526",
-#         "buy",
-#         "GQGVC7DI-V7FCWG6O-IRFKWIEY-HUXT6SQQ-P1482IJZ",
-#         "9521c1dbf6cb4b91597e669ca7d7bbf7a433eda4cece45bb3d015b6d1ce62376936b08ef751edb0a",
-#     )
-# )
-
-
-# print(
-#     balance(
-#         "algo_idr",
-#         "GQGVC7DI-V7FCWG6O-IRFKWIEY-HUXT6SQQ-P1482IJZ",
-#         "284c491c7f609599550413e4ebd19b19521c1dbf6cb4b91597e669ca7d7bbf7a433eda4cece45bb3d015b6d1ce62376936b08ef751edb0a06069c8cc8a44952d07f9003c16c1276714fd67e69838e533",
-#     )
-# )

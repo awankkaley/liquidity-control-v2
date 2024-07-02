@@ -58,7 +58,7 @@ def order(pair, side, price, size, api_key, secret_key):
             "type": response["body"]["side"],
             "price": response["body"]["price"],
             "amount": response["body"]["amount"],
-            "created_at": datetime.now(),
+            "created_at": time.time(),
         }
     else:
         return {
@@ -97,8 +97,9 @@ def price(pair):
     last_price = float(response["body"]["price"])
     return last_price
 
-def cancel(id, api_key, secret_key):
-    response = call(api_key, secret_key, True, "DELETE", "/orders/" + id)
+def cancel(pair, order_id, type, api_key, private_key):
+    print("cancel")
+    response = call(api_key, private_key, True, "DELETE", "/orders/" + order_id)
     return response
 
 
@@ -110,7 +111,7 @@ def orders(api_key, secret_key):
 def cancel_all(api_key, secret_key):
     orders_data = orders(api_key, secret_key)
     for order in orders_data:
-        cancel(order["id"], api_key, secret_key)
+        cancel("", order["id"], "", api_key, secret_key)
 
 
 # print(
