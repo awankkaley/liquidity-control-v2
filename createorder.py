@@ -23,6 +23,8 @@ class Order(Frame):
                 pair = lines[3].replace("\n", "")
                 api_key = lines[1].replace("\n", "")
                 private_key = lines[2].replace("\n", "")
+                api_key_b = lines[7].replace("\n", "")
+                private_key_b = lines[8].replace("\n", "")
                 if exchange == "3":
                     currency = lines[3].replace("\n", "").split("_")[1].upper()
                     tokenA = lines[3].replace("\n", "").split("_")[0].upper()
@@ -150,9 +152,15 @@ class Order(Frame):
         self.proses = Button(master, text="Show Log", command=self.open_win)
         self.proses.grid(row=26, column=0, columnspan=2, pady=10)
         try:
-            res = balance(pair, api_key, private_key, exchange)
-            self.tokenA["text"] = res[0]
-            self.tokenB["text"] = res[1]
+            if exchange == "7":
+                resA = balance(pair, api_key, private_key, exchange)
+                resB = balance(pair, api_key_b, private_key_b, exchange)
+                self.tokenA["text"] = resA[0]
+                self.tokenB["text"] = resB[1]
+            else:
+                res = balance(pair, api_key, private_key, exchange)
+                self.tokenA["text"] = res[0]
+                self.tokenB["text"] = res[1]
         except Exception as e:
             self.tokenA["text"] = "Failed"
             self.tokenB["text"] = "Failed"
@@ -168,6 +176,9 @@ class Order(Frame):
 
     def start_process(self):
         database = db.getDb("db.json")
+        exist_data = database.getAll()
+        for data in exist_data:
+            database.deleteById(data["id"])
         self.active = True
         min_usdt = self.min_usdt.get()
         max_usdt = self.max_usdt.get()
@@ -189,6 +200,8 @@ class Order(Frame):
                 int(self.price_decimals),
                 str(self.api_key),
                 str(self.private_key),
+                str(getattr(self, 'api_key_b', '')),
+                str(getattr(self, 'private_key_b', '')),
                 str(self.exchange),
             )
 
@@ -226,6 +239,9 @@ class Order(Frame):
                         self.quantity_decimals = lines[5].replace("\n", "")
                         if self.exchange == "2":
                             self.memo = lines[6].replace("\n", "")
+                        if self.exchange == "7":
+                            self.api_key_b = lines[7].replace("\n", "")
+                            self.private_key_b = lines[8].replace("\n", "")
                         return True
                 except:
                     self.result["text"] = "Please set your configuration first"
@@ -247,6 +263,8 @@ class Order(Frame):
         price_decimals,
         api_key,
         private_key,
+        api_key_b,
+        private_key_b,
         exchange,
     ):
         delay = expire_time
@@ -265,6 +283,8 @@ class Order(Frame):
                 price_decimals,
                 api_key,
                 private_key,
+                api_key_b,
+                private_key_b,
                 exchange,
             ),
         )
@@ -319,20 +339,69 @@ class Order(Frame):
         exist_data = database.getAll()
         if len(exist_data) > 0:
             for data in exist_data:
-                cancel(market, data["order_id"], data["type"], api_key, private_key, exchange)
+                if exchange == "7":
+                    if data["type"] == "sell":
+                        cancel(
+                            market,
+                            data["order_id"],
+                            data["type"],
+                            api_key,
+                            private_key,
+                            exchange,
+                        )
+                    else:
+                        cancel(
+                            market,
+                            data["order_id"],
+                            data["type"],
+                            api_key_b,
+                            private_key_b,
+                            exchange,
+                        )
+                else:
+                    cancel(
+                        market,
+                        data["order_id"],
+                        data["type"],
+                        api_key,
+                        private_key,
+                        exchange,
+                    )
                 database.deleteById(data["id"])
 
         for item in list:
             try:
-                res = exchangeOrder(
-                    item["symbol"],
-                    item["type"],
-                    item["price"],
-                    item["amount"],
-                    api_key,
-                    private_key,
-                    exchange,
-                )
+                if exchange == "7":
+                    if item["type"] == "sell":
+                        res = exchangeOrder(
+                            item["symbol"],
+                            item["type"],
+                            item["price"],
+                            item["amount"],
+                            api_key,
+                            private_key,
+                            exchange,
+                        )
+                    else:
+                        res = exchangeOrder(
+                            item["symbol"],
+                            item["type"],
+                            item["price"],
+                            item["amount"],
+                            api_key_b,
+                            private_key_b,
+                            exchange,
+                        )
+                else:
+                    res = exchangeOrder(
+                        item["symbol"],
+                        item["type"],
+                        item["price"],
+                        item["amount"],
+                        api_key,
+                        private_key,
+                        exchange,
+                    )
                 if res["success"] == True:
                     database.add(res)
                     if res["type"] == "buy":
@@ -402,9 +471,15 @@ class Order(Frame):
                 print("Order  " + item["type"] + ": Failed- Request Failed")
 
         try:
-            res = balance(market, api_key, private_key, exchange)
-            self.tokenA["text"] = res[0]
-            self.tokenB["text"] = res[1]
+            if exchange == "7":
+                resA = balance(market, api_key, private_key, exchange)
+                resB = balance(market, api_key_b, private_key_b, exchange)
+                self.tokenA["text"] = resA[0]
+                self.tokenB["text"] = resB[1]
+            else:
+                res = balance(market, api_key, private_key, exchange)
+                self.tokenA["text"] = res[0]
+                self.tokenB["text"] = res[1]
         except Exception as e:
             self.tokenA["text"] = "Failed"
             self.tokenB["text"] = "Failed"
